@@ -1,0 +1,255 @@
+.html, body {
+    height: 100%;
+    font-size: 100%;
+    font-family: 'Lato', sans-serif;
+    background: #ffffff;
+    margin: 0;
+}
+
+body {
+    font-family: 'Lato', sans-serif;
+    font-size: 12px;
+    line-height: 1.42857143;
+    color: #333;
+    background-color: #fff;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Montserrat', sans-serif;
+    margin: 0;
+}
+
+/*HEADER AND NAVBAR*/
+
+.banner-inner {
+    background: url(https://firebasestorage.googleapis.com/v0/b/a0720i1.appspot.com/o/dat-home%2Fmoney-heist.jpg?alt=media&token=f251ca40-e8ef-4d69-bfa7-a122b574e9f7) no-repeat 0 0;
+    background-size: cover;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    -ms-background-size: cover;
+    min-height: 200px !important;
+}
+
+.banner-inner-dot {
+    background: url(../../../templates/client/client-shared/images/dots.png) repeat 0 0;
+
+    text-align: center;
+    padding-bottom: 150px;
+}
+
+.header-w3-agileits {
+    padding-top: 1em;
+}
+
+.header-w3-agileits {
+    padding: 0 5em;
+    position: relative;
+}
+
+.header-w3-agileits.part2 {
+    position: relative;
+    padding-bottom: 1em;
+}
+
+.navbar-default {
+    background: none;
+    border: none;
+    margin: 0;
+    min-height: inherit;
+}
+
+.navbar-header {
+    display: flex;
+    flex-direction: row;
+}
+
+.navbar-header h1 {
+    font-size: 2em;
+    display: block;
+    text-transform: uppercase;
+}
+
+.navbar-header h1 a {
+    color: #FFFFFF;
+    text-decoration: none;
+    display: inline-block;
+    line-height: 78px;
+    font-weight: bold;
+}
+
+.navbar-header h1 a span {
+    color: #02a388;
+    font-size: 1.5em;
+}
+
+.navbar-collapse-margin {
+    margin-left: 12rem;
+}
+
+.nav-link-custom {
+    font-size: 1em;
+    padding: 1em 0.7em;
+    position: relative;
+    font-weight: 400;
+    text-transform: uppercase;
+    font-family: 'Lato', sans-serif;
+    letter-spacing: 1px;
+    color: #fff !important;
+    margin-right: 30px;
+}
+
+.w3_agilits_banner_bootm {
+    padding: 1em 0 0.2em 0;
+    background: #fe423f;
+}
+
+.w3_agilits_inner_bottom {
+    margin: 0 auto;
+    padding: 0 4em;
+}
+
+.red-bar li {
+    letter-spacing: 2px;
+    list-style: none;
+    display: inline-block;
+    color: #fff;
+    padding: 2px;
+}
+
+a {
+    text-decoration: none;
+}
+
+a.login {
+    text-decoration: none;
+    background: #0c0d0d;
+    color: #fff;
+    padding: 0.7em 1em;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    font-size: 0.9em;
+    margin-left: 3em;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+a.login:hover {
+    background-color: #02a388;
+    color: #000000;
+}
+
+.w3_breadcrumb {
+    padding: 1.2em 0;
+    background: #e9ecec;
+}
+
+.breadcrumb-inner {
+    padding: 0 2.5em;
+}
+
+.w3_breadcrumb ul {
+    list-style-type: none;
+    margin-top: auto;
+    margin-bottom: auto;
+}
+
+.w3_breadcrumb ul li a {
+    color: #02a388;
+    font-size: 1.1em;
+    cursor: pointer;
+    padding-bottom: 0.2rem;
+}
+
+
+/*FOOTER*/
+
+.contact {
+    background: #0c0d0d;
+    padding: 3em 0 1em 0;
+}
+
+.footer-w3lagile-inner {
+    padding: 0 2em;
+}
+
+.company-name {
+    text-align: center;
+    font-size: 1.5em;
+    color: #fff;
+    text-transform: uppercase;
+}
+
+.company-info {
+    text-align: center;
+    color: white;
+    margin-top: 1rem;
+    font-size: 0.9rem;
+}
+
+.bottom-links-agile {
+    text-align: center;
+    border-top: 1px solid #1a1d1d;
+    border-bottom: 1px solid #1a1d1d;
+    padding: 1.5em 0;
+    margin: 3em 0 2em 0;
+}
+
+.bottom-links-agile li {
+    display: inline-block;
+    margin: 0 2em;
+}
+
+.bottom-links-agile li a {
+    font-size: 14px;
+    color: #606161;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.follow {
+    text-align: center;
+    font-size: 1.5em;
+    color: #fff;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.w3agile_footer_copy {
+    padding: 1em 0;
+    background: #02a388;
+}
+
+.social-icons {
+    list-style: none;
+    margin: 1.5em auto;
+    text-align: center;
+    padding-inline-start: 0;
+}
+
+.social-icons li {
+    display: inline-block;
+    margin-right: 6px;
+}
+
+.social-icons li a {
+    text-decoration: none;
+    font-size: 16px;
+    color: #000;
+}
+
+.social-icons li a i.fa {
+    font-size: 18px;
+    line-height: 41px;
+    width: 42px;
+    height: 42px;
+    border: 1px solid #999;
+    text-align: center;
+    background-color: transparent;
+    transition: all 0.5s ease-in-out;
+    -webkit-transition: all 0.5s ease-in-out;
+    -moz-transition: all 0.5s ease-in-out;
+    -o-transition: all 0.5s ease-in-out;
+    -ms-transition: all 0.5s ease-in-out;
+    color: #fff;
+}

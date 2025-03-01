@@ -1,0 +1,19 @@
+.nav-item > a {
+    font-weight: bold;
+}
+
+.navbar-expand-lg {
+    width: 90%;
+}
+
+.dropdown-menu {
+    padding: 0;
+}
+
+.truncate {
+    width: 150px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
