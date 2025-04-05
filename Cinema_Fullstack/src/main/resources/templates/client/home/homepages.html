@@ -1,0 +1,241 @@
+<!doctype html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title>Cinema</title>
+    <base href="/">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="/template/layout/homepages.css">
+    <link rel="stylesheet" href="/template/css/layout.css">
+    <link rel="stylesheet" href="/template/css/content.css">
+    <link rel="stylesheet" href="/template/style.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <link rel="stylesheet" href="/template/bootstrap/css/bootstrap.css">
+
+</head>
+<body class="mat-typography">
+<div class="container-fluid">
+    <!--Nav-bar-->
+    <h1><small>CINEMA</small> <small>This is your world</small></h1>
+    <div class="slideshow position-relative container-fluid">
+        <div class="slideshow-image"
+             style="background-image: url('https://images-na.ssl-images-amazon.com/images/I/81jqQeQZUIL._RI_.jpg')"></div>
+        <div class="slideshow-image"
+             style="background-image: url('https://i2.wp.com/dmtalkies.com/wp-content/uploads/2020/09/qypq1yizrfzf2wzbluyl.jpg?fit=1280%2C720&ssl=1')"></div>
+        <div class="slideshow-image"
+             style="background-image: url('https://khenphim.com/wp-content/uploads/2019/03/us-2-banner.jpg')"></div>
+        <div class="slideshow-image"
+             style="background-image: url('https://firebasestorage.googleapis.com/v0/b/a0720i1.appspot.com/o/dat-home%2Fbanner2.jpg?alt=media&token=dfee7647-a522-46d2-8e98-9c01918fa470')"></div>
+        <div class="navbar-header">
+            <nav class="navbar navbar-expand-lg navbar-light position-absolute">
+                <h1><a href="#"><span>C</span>inema</a></h1>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown"
+                        aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse navbar-collapse-margin" id="navbarNavDropdown">
+                    <ul class="navbar-nav">
+                        <li class="nav-item" th:if="${isAdmin}">
+                            <a class="nav-link nav-link-custom" th:href="@{/admin/film}">ADMIN</a>
+                        </li>
+                        <li class="nav-item" th:unless="${isAdmin}">
+                            <a class="nav-link nav-link-custom" th:href="@{/}">Trang chủ</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link nav-link-custom" th:href="@{/book/film-selection}">Đặt vé</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link nav-link-custom" th:href="@{/ticket-price}">Giá vé</a>
+                        </li>
+                        <li class="nav-item" th:if="${username != null}">
+                            <a class="nav-link nav-link-custom truncate text-left"
+                               th:href="@{/member/manager/info/{username}(username=${username})}"
+                               th:text="${username}"></a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+        </div>
+    </div>
+    <div class="w3_agilits_banner_bootm">
+        <div class="w3_agilits_inner_bottom d-flex justify-content-between align-items-center px-4">
+            <span class="red-bar d-flex align-items-center">
+                <i class="material-icons mr-2">call</i> (+084) 776 335 355
+            </span>
+            <div>
+                <div th:unless="${username != null}">
+                    <a th:href="@{/login}" class="login-button">Đăng nhập</a>
+                    <a th:href="@{/member/register}" class="login-button ml-2">Đăng ký</a>
+                </div>
+                <div th:if="${username != null}" class="username-text">
+                    Chào, <span th:text="${username}"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success message -->
+    <div th:if="${success}" class="alert alert-success" role="alert">
+        <span th:text="${success}"></span>
+    </div>
+
+    <!-- Error message -->
+    <div th:if="${error}" class="alert alert-danger" role="alert">
+        <span th:text="${error}"></span>
+    </div>
+
+    <!--Nav-bar-->
+    <div class="container-fluid">
+        <div class="banner-top-movie">
+          <span class="message">
+            BEST YOUR CHOICE
+          </span>
+            <h1 class="banner-top-movie-title">TOP MOVIES</h1>
+        </div>
+        <!--  Top movie -->
+        <div class="top-film d-flex flex-wrap justify-content-center mb-3">
+            <th:block th:each="film : ${listTopFilm}">
+                <div class="col-md-3 col-lg-3 col-sm-6 p-3">
+                    <div class="card position-relative">
+                        <img class="card-img-top img-top-movie" th:src="@{${film.imageUrl}}" alt="...">
+                        <div class="hover-overlay-top-movie"></div>
+                        <div class="position-absolute name-top-movie">
+                            <p th:text="${film.name}"></p>
+                        </div>
+                        <div class="position-absolute d-flex btn-top-movie">
+                            <a class="btn" th:href="@{/book/film-selection(filmId=${film.id})}"> Đặt vé </a>
+                            <a class="btn" th:href="@{/detail/{id}(id=${film.id})}"> Chi tiết </a>
+                        </div>
+                        <div class="rated position-absolute">
+                            <img th:src="@{${film.age}}" alt="Cam do tuoi">
+                        </div>
+                    </div>
+                </div>
+            </th:block>
+        </div>
+        <!--  Top movie -->
+        <!--  Banner-->
+        <div>
+            <div class="banner-film"><img
+                    src="https://firebasestorage.googleapis.com/v0/b/a0720i1.appspot.com/o/dat-home%2F8728.jpg?alt=media&token=df04b398-a967-4d39-aee8-1a31ddef77ac"
+                    alt="banner">
+            </div>
+        </div>
+        <!--  Banner-->
+        <!--  Header list-film-->
+        <div class="main-list-film">
+            <div class="nav-herder d-flex justify-content-center flex-wrap" id="idFilm">
+            <span th:style="'background:' + (isShowing ? '#02a388' : '#0c0d0d')">
+                <a th:href="@{/?isShowing=true}" th:text="'Phim Đang Chiếu'">Phim Đang Chiếu</a>
+            </span>
+                <span th:style="'background:' + (!isShowing ? '#02a388' : '#0c0d0d')">
+                <a th:href="@{/?isShowing=false}" th:text="'Phim Sắp Chiếu'">Phim Sắp Chiếu</a>
+            </span>
+            </div>
+            <!--  Header list-film-->
+            <!--    Button search-->
+            <div id="wrap">
+                <div>
+                    <!-- Ô nhập tìm kiếm, sử dụng th:value để giữ giá trị khi trang được tải lại -->
+                    <input id="search" name="search" type="text" placeholder="Nhập để tìm kiếm" th:value="${nameSearch}"
+                           th:onkeyup="searchFilm()">
+                    <span class="material-icons material-icons-outlined search_submit">search</span>
+                </div>
+            </div>
+            <!--    Button search-->
+            <!--    List-film-->
+            <div class="container">
+                <div class="row justify-content-center">
+                    <div th:each="film : ${listFilmData}"
+                         class="col-md-4 col-lg-3 col-sm-6 d-flex justify-content-center mb-4">
+                        <div class="card">
+                            <img class="card-img-top card-image" th:src="@{${film.imageUrl}}" alt="...">
+                            <div class="hover-overlay"></div>
+                            <div class="button-overlay d-flex flex-row">
+                                <a class="btn-sm mr-3" th:href="@{/book/film-selection(filmId=${film.id})}">Đặt vé</a>
+                                <a class="btn-sm" th:href="@{/detail/{id}(id=${film.id})}">Chi tiết</a>
+                            </div>
+                            <div class="card-body pt-2">
+                                <div class="card-title info-header">
+                                    <a th:href="@{/detail/{id}(id=${film.id})}"><h3 th:text="${film.name}"></h3></a>
+                                </div>
+                                <div class="card-text info-detail">
+                                    <ul>
+                                        <li class="li-category mb-1">
+                                            <span>Thể loại:</span>
+                                            <span th:text="${film.category}"></span>
+                                        </li>
+                                        <li><span>Thời Lượng:</span> <span th:text="${film.duration}"> </span> phút</li>
+                                        <li>
+                                            <span>Ngày khởi chiếu:</span>
+                                            <span th:text="${#temporals.format(film.start_date, 'dd/MM/yyyy')}"></span>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="rated position-absolute">
+                                <img th:src="@{${film.age}}" alt="Cam do tuoi">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--  Header list-film-->
+
+        <!--    Promote-->
+        <h3 class="agile_w3_title promote-header">KHUYẾN MÃI & ƯU ĐÃI</h3>
+        <hr>
+        <div class="promote">
+            <img src="https://firebasestorage.googleapis.com/v0/b/a0720i1.appspot.com/o/dat-home%2Fpromote1.png?alt=media&token=78a6989f-fc68-4cdd-a9aa-0286fcb6485a"
+                 alt="Main Image" class="promote-main">
+
+            <div class="list-promote">
+                <a href=""><img
+                        src="https://firebasestorage.googleapis.com/v0/b/a0720i1.appspot.com/o/dat-home%2Fpromote2.jpg?alt=media&token=d69484ec-d352-4326-b025-328948b6e991"
+                        alt=""></a>
+                <a href=""><img
+                        src="https://firebasestorage.googleapis.com/v0/b/a0720i1.appspot.com/o/dat-home%2Fpromote3.jpg?alt=media&token=bb7e8b29-00c1-4580-beee-167fc209f3e9"
+                        alt=""></a>
+                <a href=""><img
+                        src="https://firebasestorage.googleapis.com/v0/b/a0720i1.appspot.com/o/dat-home%2Fpromote4.jpg?alt=media&token=a9e23269-124e-4aeb-801f-de1024c79292"
+                        alt=""></a>
+                <a href=""><img
+                        src="https://firebasestorage.googleapis.com/v0/b/a0720i1.appspot.com/o/dat-home%2Fpromote5.jpg?alt=media&token=c98b5d49-b4f6-4612-b9c4-d338e8e8bf75"
+                        alt=""></a>
+            </div>
+        </div>
+
+
+        <!--    Promote-->
+        <div th:replace="~{client/client-shared/layout/footer.html}"></div>
+    </div>
+</div>
+
+<script>
+    function searchFilm() {
+        var nameSearch = document.getElementById("search").value;
+
+        fetch('/?nameSearch=' + nameSearch + '&isShowing=true')
+            .then(response => response.text())
+            .then(html => {
+                document.body.innerHTML = html;
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+    }
+</script>
+
+<script src="/template/bootstrap/jquery-3.6.0.min.js"></script>
+<script src="/template/bootstrap/js/bootstrap.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
+        crossorigin="anonymous"></script>
+
+</body>
+</html>

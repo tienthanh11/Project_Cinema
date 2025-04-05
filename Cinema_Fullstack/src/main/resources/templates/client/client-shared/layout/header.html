@@ -6,8 +6,6 @@
     <base href="/">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="icon" type="image/x-icon" href="favicon.ico">
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
-          rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="stylesheet" href="/template/layout/header.css">
@@ -25,13 +23,19 @@
             <div th:replace="~{client/client-shared/layout/navbar.html}"></div>
         </div>
         <div class="w3_agilits_banner_bootm">
-            <div class="w3_agilits_inner_bottom">
-                <ul class="red-bar d-flex flex-row mx-0 px-0">
-                    <li><i class="fa fa-phone" aria-hidden="true"></i> (+084) 037 471 8365</li>
-                    <li><a href='/member/login' *ngIf="!isLoggedIn" class="login">Đăng nhập</a></li>
-
-                    <li><a href='/member/register' *ngIf="!isLoggedIn" class="login ml-1">Đăng ký</a></li>
-                </ul>
+            <div class="w3_agilits_inner_bottom d-flex justify-content-between align-items-center px-4">
+            <span class="red-bar d-flex align-items-center">
+                <i class="material-icons mr-2">call</i> (+084) 037 471 8365
+            </span>
+                <div>
+                <span th:if="${username == null}">
+                    <a th:href="@{/login}" class="login-button">Đăng nhập</a>
+                    <a th:href="@{/member/register}" class="login-button ml-2">Đăng ký</a>
+                </span>
+                    <span th:if="${username != null}" class="username-text">
+                        Chào, <span th:text="${username}"></span>
+                    </span>
+                </div>
             </div>
         </div>
     </div>

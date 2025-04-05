@@ -14,6 +14,6 @@ public interface AccountService {
     boolean checkNewPwEqualOldPw(Account account,AccountDTO accountDTO);
     void changePassword(Account account,AccountDTO accountDTO);
     String generateCode();
-    void sendEmailOTP(String email, String code);
+//    void sendEmailOTP(String email, String code);
     void changePasswordByForgot(String password,Account account);
 }

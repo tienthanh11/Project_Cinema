@@ -9,6 +9,7 @@ public interface MemberShipService {
     Membership findByPhone(String phone);
     Membership findByCard(String card);
     Membership findById(long id);
+    Membership findByUsername(String username);
     Membership findByAccountId(long accountId);
     void createMembership(AccountMemberDTO membership);
     void updateMembership(MembershipUpdateDTO membership);

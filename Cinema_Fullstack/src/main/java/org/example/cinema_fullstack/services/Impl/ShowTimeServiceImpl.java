@@ -1,9 +1,7 @@
 package org.example.cinema_fullstack.services.Impl;
 
 import org.example.cinema_fullstack.models.dto.showtime.CreateShowtimeDTO;
-import org.example.cinema_fullstack.models.dto.ticket.BookTicketShowtimeDto;
-import org.example.cinema_fullstack.models.dto.ticket.BookingSeatDTO;
-import org.example.cinema_fullstack.models.dto.ticket.CinemaRoomLayout;
+import org.example.cinema_fullstack.models.dto.ticket.*;
 import org.example.cinema_fullstack.models.entity.CinemaRoom;
 import org.example.cinema_fullstack.models.entity.Film;
 import org.example.cinema_fullstack.models.entity.Showtime;
@@ -16,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -33,11 +32,11 @@ public class ShowTimeServiceImpl implements ShowTimeService {
     @Override
     public void createShowtimeDTO(CreateShowtimeDTO createShowtimeDTO) {
         showTimeRepository.createShowtimeDTO(createShowtimeDTO.getFilmTechnology(),
-                                                createShowtimeDTO.getSubTitle(),
-                                                createShowtimeDTO.getDay(),
-                                                createShowtimeDTO.getTime(),
-                                                createShowtimeDTO.getFilmId(),
-                                                createShowtimeDTO.getCinemaRoomId());
+                createShowtimeDTO.getSubTitle(),
+                createShowtimeDTO.getDay(),
+                createShowtimeDTO.getTime(),
+                createShowtimeDTO.getFilmId(),
+                createShowtimeDTO.getCinemaRoomId());
     }
 
     @Override
@@ -66,13 +65,64 @@ public class ShowTimeServiceImpl implements ShowTimeService {
     }
 
     @Override
-    public List<BookingSeatDTO> getAllSeatByShowtimeId(long showtimeId) {
-        return showTimeRepository.getAllSeatByShowtimeId(showtimeId);
+    public List<BookTicketShowtimeDto> getShowtimesByFilmId(Long filmId) {
+        return showTimeRepository.getShowtimesByFilmId(filmId);
     }
 
     @Override
-    public CinemaRoomLayout getCinemaRoomLayoutByShowtimeId(long showtimeId) {
-        return showTimeRepository.getCinemaRoomLayoutByShowtimeId(showtimeId);
+    public ShowtimeDto getShowtimeById(Long showtimeId) {
+        List<BookTicketShowtimeDto> showtimes = showTimeRepository.getAllFilmShowingThisWeek();
+        return showtimes.stream()
+                .filter(s -> s.getShowtimeId().equals(showtimeId))
+                .map(s -> new ShowtimeDto(
+                        s.getShowtimeId(),
+                        s.getFilmId(),
+                        s.getFilmName(),
+                        s.getFilmCategory(),
+                        s.getFilmActors(),
+                        s.getFilmDirectors(),
+                        s.getFilmDuration(),
+                        s.getFilmAge(),
+                        s.getFilmImageUrl(),
+                        s.getFilmTechnology(),
+                        s.getSubtitle(),
+                        s.getShowtimeDay(),
+                        s.getShowtimeTime(),
+                        s.getCinemaRoomId(),
+                        s.getCinemaRoomName()
+                ))
+                .findFirst()
+                .orElse(null);
+    }
+
+    @Override
+    public List<SeatDto> getAllSeatByShowtimeId(Long showtimeId) {
+        List<Object[]> results = showTimeRepository.getAllSeatByShowtimeId(showtimeId);
+        List<SeatDto> seatList = new ArrayList<>();
+        for (Object[] result : results) {
+            SeatDto seat = new SeatDto(
+                    result[0] != null ? ((Number) result[0]).longValue() : null, // seatId
+                    (String) result[1], // seatName
+                    (String) result[2], // seatType
+                    (String) result[3], // seatCode
+                    result[4] != null ? ((Number) result[4]).longValue() : null, // priceId
+                    result[5] != null ? ((Number) result[5]).intValue() : null, // price
+                    result[6] != null ? ((Number) result[6]).longValue() : null  // ticketId
+            );
+            seatList.add(seat);
+        }
+        return seatList;
+    }
+
+    @Override
+    public CinemaRoomLayoutDto getCinemaRoomLayoutByShowtimeId(Long showtimeId) {
+        CinemaRoomLayout layout = showTimeRepository.getCinemaRoomLayoutByShowtimeId(showtimeId);
+        return new CinemaRoomLayoutDto(
+                layout.getCinemaRoomId(),
+                layout.getRowSeat(),
+                layout.getColumnSeat(),
+                layout.getSeatLayout()
+        );
     }
 
     @Override

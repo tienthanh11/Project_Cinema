@@ -5,6 +5,7 @@ import org.example.cinema_fullstack.models.entity.Membership;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,17 +29,20 @@ public interface MemberShipRepository extends JpaRepository<Membership, Long> {
             nativeQuery = true)
     Membership findById(long id);
 
+    @Query(value = "SELECT m.* FROM membership m JOIN account a ON m.account_id = a.id WHERE a.username = :username",
+            nativeQuery = true)
+    Membership findByUsername(@Param("username") String username);
+
     @Transactional
     @Modifying
     @Query(value = "INSERT INTO membership (member_code,name,card,phone,email,birthday,gender,imageurl,ward_id,account_id) VALUE (?1,?2,?3,?4,?5,?6,?7,?8,?9,?10)",
             nativeQuery = true)
     void createMembership(String memberCode, String name, String card, String phone, String email, LocalDate birthday, String gender, String imageurl, Integer wardId, Long accountId);
-
     @Transactional
     @Modifying
-    @Query(value = "update membership as m set m.name = ?1,m.card = ?2,m.phone = ?3,m.email = ?4,m.birthday=?5,m.gender=?6,m.imageurl=?7,m.ward_id=?8 where m.id = ?9 ",
+    @Query(value = "UPDATE membership m SET m.member_code = ?1, m.name = ?2, m.card = ?3, m.phone = ?4, m.email = ?5, m.birthday = ?6, m.gender = ?7, m.imageurl = ?8, m.ward_id = ?9 WHERE m.id = ?10",
             nativeQuery = true)
-    void updateMembership(String name, String card, String phone, String email, LocalDate birthday, String gender, String imageURL, Integer wardId, Long id);
+    void updateMembership(String memberCode, String name, String card, String phone, String email, LocalDate birthday, String gender, String imageURL, Integer wardId, Long id);
 
     @Transactional
     @Modifying

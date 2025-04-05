@@ -9,6 +9,7 @@ import org.example.cinema_fullstack.repositories.MemberShipRepository;
 import org.example.cinema_fullstack.services.MemberShipService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class MemberShipServiceImpl implements MemberShipService {
@@ -37,6 +38,11 @@ public class MemberShipServiceImpl implements MemberShipService {
     }
 
     @Override
+    public Membership findByUsername(String username) {
+        return memberShipRepository.findByUsername(username);
+    }
+
+    @Override
     public Membership findByAccountId(long accountId) {
         return memberShipRepository.findByAccountId(accountId);
     }
@@ -58,9 +64,13 @@ public class MemberShipServiceImpl implements MemberShipService {
     }
 
     @Override
+    @Transactional
     public void updateMembership(MembershipUpdateDTO membership) {
-        memberShipRepository.updateMembership(membership.getName()
-                ,membership.getCard().replaceAll("\\s{2,}", " ").trim()
+        System.out.println("Updating membership: " + membership);
+        memberShipRepository.updateMembership(
+                membership.getMemberCode()
+                ,membership.getName().replaceAll("\\s{2,}", " ").trim()
+                ,membership.getCard()
                 ,membership.getPhone()
                 ,membership.getEmail()
                 ,membership.getBirthday()
@@ -68,6 +78,7 @@ public class MemberShipServiceImpl implements MemberShipService {
                 ,membership.getImageURL()
                 ,membership.getWardId()
                 ,membership.getId());
+
     }
 
     @Override

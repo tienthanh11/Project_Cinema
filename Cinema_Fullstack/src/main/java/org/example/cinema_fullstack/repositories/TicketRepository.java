@@ -24,16 +24,33 @@ public interface TicketRepository extends JpaRepository<Ticket, Long> {
             "left join ticket_price on seat.ticket_price_id =  ticket_price.id where ticket.invoice_id = ?1", nativeQuery = true)
     List<BookingTicketDTO> getAllTicketByInvoiceId(Long invoiceId);
 
-    @Query(value = "select invoice.id as invoiceId,ticket.id as ticketId,showtime.day as date,showtime.time as time,sum(ticket_price.price) as price,film.name as filmName,ticket.printed as status,group_concat(seat.name) as seatName from `ticket`\n" +
-            "left join invoice on ticket.invoice_id = invoice.id\n" +
-            "left join membership on membership.id = invoice.membership_id\n" +
-            "left join seat on seat.ticket_id = ticket.id\n" +
-            "left join ticket_price on seat.ticket_price_id = ticket_price.id\n" +
-            "left join showtime on seat.showtime_id = showtime.id\n" +
-            "left join film on showtime.film_id = film.id\n" +
-            "where membership.id=?1\n" +
-            "group by invoice.id",nativeQuery = true)
+//    @Query(value = "select invoice.id as invoiceId,ticket.id as ticketId,showtime.day as date,showtime.time as time,sum(ticket_price.price) as price,film.name as filmName,ticket.printed as status,group_concat(seat.name) as seatName from `ticket`\n" +
+//            "left join invoice on ticket.invoice_id = invoice.id\n" +
+//            "left join membership on membership.id = invoice.membership_id\n" +
+//            "left join seat on seat.ticket_id = ticket.id\n" +
+//            "left join ticket_price on seat.ticket_price_id = ticket_price.id\n" +
+//            "left join showtime on seat.showtime_id = showtime.id\n" +
+//            "left join film on showtime.film_id = film.id\n" +
+//            "where membership.id=?1\n" +
+//            "group by invoice.id",nativeQuery = true)
+//    Page<TicketDTO> findTicketByMembership(Pageable pageable, Long id);
+
+
+    @Query(value = "SELECT invoice.id AS invoiceId, ticket.id AS ticketId, " +
+            "MAX(showtime.day) AS date, MAX(showtime.time) AS time, " +
+            "SUM(ticket_price.price) AS price, MAX(film.name) AS filmName, " +
+            "MAX(ticket.printed) AS status, GROUP_CONCAT(seat.name) AS seatName " +
+            "FROM ticket " +
+            "LEFT JOIN invoice ON ticket.invoice_id = invoice.id " +
+            "LEFT JOIN membership ON membership.id = invoice.membership_id " +
+            "LEFT JOIN seat ON seat.ticket_id = ticket.id " +
+            "LEFT JOIN ticket_price ON seat.ticket_price_id = ticket_price.id " +
+            "LEFT JOIN showtime ON seat.showtime_id = showtime.id " +
+            "LEFT JOIN film ON showtime.film_id = film.id " +
+            "WHERE membership.id = ?1 " +
+            "GROUP BY invoice.id, ticket.id", nativeQuery = true)
     Page<TicketDTO> findTicketByMembership(Pageable pageable, Long id);
+
     @Query(value = "select invoice.id as invoiceId,membership.member_code as memberCode,invoice.code as code,membership.name as memberName,membership.card as memberCard,membership.phone as memberPhone, film.name as filmName,showtime.day,showtime.time,ticket.printed,cinema_room.name as cinemaRoom,group_concat(seat.name) as seatName,sum(ticket_price.price) as price from `ticket`\n" +
             "left join invoice on ticket.invoice_id = invoice.id\n" +
             "left join membership on membership.id = invoice.membership_id\n" +

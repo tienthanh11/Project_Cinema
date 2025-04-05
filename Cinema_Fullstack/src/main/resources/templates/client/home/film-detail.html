@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Cinema</title>
+    <base href="/">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="/template/layout/film-detail.css">
+    <link rel="stylesheet" href="/template/css/content.css">
+    <link rel="stylesheet" href="/template/style.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <link rel="stylesheet" href="/template/bootstrap/css/bootstrap.css">
+
+    <style>
+        .film-detail-header p {
+            font-size: 24px;
+            font-weight: bold;
+            text-align: center;
+            color: #2c7a57;
+            margin-bottom: 10px;
+        }
+
+        .film-detail {
+            display: flex;
+            gap: 20px;
+            align-items: start;
+        }
+
+        .film-detail-image img {
+            width: 250px;
+            border-radius: 10px;
+        }
+
+        .film-detail-info {
+            max-width: 600px;
+        }
+
+        .film-detail-info h1 {
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .btn-film-detail a {
+            font-size: 16px;
+            padding: 8px 16px;
+            border-radius: 5px;
+            text-transform: uppercase;
+            font-weight: bold;
+        }
+
+        .nav-tabs {
+            border-bottom: 2px solid #2c7a57;
+        }
+
+        .nav-tabs .nav-link {
+            color: #2c7a57;
+            font-size: 18px;
+            font-weight: bold;
+            padding: 10px 20px;
+        }
+
+        .nav-tabs .nav-link.active {
+            background-color: #2c7a57;
+            color: white;
+            border-radius: 5px 5px 0 0;
+        }
+
+        .tab-content {
+            border: 1px solid #ddd;
+            padding: 15px;
+            border-radius: 5px;
+            background-color: white;
+            margin-top: -1px;
+        }
+
+        /* Trailer Section */
+        .trailer-section {
+            margin-bottom: 40px;
+            padding: 20px;
+            border-radius: 15px;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .trailer-section iframe {
+            border-radius: 15px;
+            width: 100%;
+            height: 400px;
+        }
+
+    </style>
+
+</head>
+<body class="mat-typography">
+<div class="container-fluid">
+    <div th:replace="~{client/client-shared/layout/header.html}"></div>
+
+    <div class="container">
+        <div class="film-detail-header d-flex justify-content-center">
+            <h2 class="text-center text-success">Nội dung phim</h2>
+        </div>
+        <hr>
+        <div class="d-flex justify-content-start film-detail">
+            <div class="film-detail-image">
+                <img th:src="${filmDetail.imageUrl}" alt="Film Image">
+            </div>
+            <div class="film-detail-info">
+                <div class="film-detail-info-name">
+                    <h1 th:text="${filmDetail.name}">Film Name</h1>
+                </div>
+                <div>
+                    <span><strong>Khởi chiếu:</strong></span>
+                    <span th:text="'Từ ' + ${#temporals.format(filmDetail.start_date, 'dd/MM/yyyy')}">Start Date</span>
+                </div>
+                <div>
+                    <span><strong>Loại phim:</strong></span>
+                    <span th:text="${filmDetail.category}">Category</span>
+                </div>
+                <div>
+                    <span><strong>Đạo diễn:</strong></span>
+                    <span th:text="${filmDetail.directors}">Directors</span>
+                </div>
+                <div>
+                    <span><strong>Diễn viên:</strong></span>
+                    <span th:text="${filmDetail.actors}">Actors</span>
+                </div>
+                <div>
+                    <span><strong>Thời lượng:</strong></span>
+                    <span th:text="${filmDetail.duration} + ' phút'">Duration</span>
+                </div>
+                <div>
+                    <span><strong>Hãng:</strong></span>
+                    <span th:text="${filmDetail.studio}">Studio</span>
+                </div>
+                <div>
+                    <span><strong>Đánh Giá:</strong></span>
+                    <span th:text="${filmDetail.rate}">Rate</span>
+                </div>
+                <div class="img-age">
+                    <span>
+                        <img th:src="${filmDetail.age}" alt="Age Rating">
+                    </span>
+                </div>
+                <div class="btn-film-detail">
+                        <span>
+                            <a th:href="@{/book/film-selection(filmId=${filmDetail.id})}"
+                               class="btn btn-outline-success">Đặt vé</a>
+                        </span>
+                </div>
+            </div>
+        </div>
+        <div class="film-detail-content">
+            <nav>
+                <div class="nav nav-tabs d-flex justify-content-center" id="nav-tab" role="tablist">
+                    <button class="nav-item nav-link active" id="nav-home-tab" data-bs-toggle="tab"
+                            data-bs-target="#nav-home" type="button" role="tab" aria-controls="nav-home"
+                            aria-selected="true">Nội dung
+                    </button>
+                    <button class="nav-item nav-link" id="nav-profile-tab" data-bs-toggle="tab"
+                            data-bs-target="#nav-profile" type="button" role="tab" aria-controls="nav-profile"
+                            aria-selected="false">Trailer
+                    </button>
+                </div>
+            </nav>
+
+            <div class="tab-content description" id="nav-tabContent">
+                <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
+                    <p th:text="${filmDetail.description}">Description</p>
+                </div>
+                <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
+                    <div class="trailer-section">
+                        <a th:href="${filmDetail.trailer}" target="_blank" class="trailer-link"></a>
+                        <div id="trailer-preview"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div th:replace="~{client/client-shared/layout/footer.html}"></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
+        crossorigin="anonymous"></script>
+<script src="/template/bootstrap/jquery-3.6.0.min.js"></script>
+<script src="/template/bootstrap/js/bootstrap.js"></script>
+
+<script>
+    // Trailer Preview
+    document.addEventListener('DOMContentLoaded', function () {
+        const trailerUrl = document.querySelector('.trailer-link').href;
+        const trailerPreview = document.querySelector('#trailer-preview');
+        let videoId = '';
+
+        // Extract YouTube video ID from various URL formats
+        if (trailerUrl.includes('youtu.be')) {
+            videoId = trailerUrl.split('youtu.be/')[1]?.split('?')[0];
+        } else if (trailerUrl.includes('watch?v=')) {
+            videoId = trailerUrl.split('watch?v=')[1]?.split('&')[0];
+        } else if (trailerUrl.includes('embed/')) {
+            videoId = trailerUrl.split('embed/')[1]?.split('?')[0];
+        }
+
+        if (videoId) {
+            trailerPreview.innerHTML = `
+                <iframe width="100%" height="500" src="https://www.youtube.com/embed/${videoId}"
+                        frameborder="0" allowfullscreen></iframe>
+            `;
+        }
+    });
+</script>
+</body>
+</html>

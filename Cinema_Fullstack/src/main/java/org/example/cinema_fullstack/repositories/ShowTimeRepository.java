@@ -1,8 +1,8 @@
 package org.example.cinema_fullstack.repositories;
 
 import org.example.cinema_fullstack.models.dto.ticket.BookTicketShowtimeDto;
-import org.example.cinema_fullstack.models.dto.ticket.BookingSeatDTO;
 import org.example.cinema_fullstack.models.dto.ticket.CinemaRoomLayout;
+import org.example.cinema_fullstack.models.dto.ticket.SeatDto;
 import org.example.cinema_fullstack.models.entity.Showtime;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -41,17 +41,40 @@ public interface ShowTimeRepository extends JpaRepository<Showtime, Long> {
             " WHERE showtime.day >= CURDATE()  AND showtime.day <= NOW() + INTERVAL 7 DAY ORDER BY film.start_date DESC, film.name, showtime.day, showtime.time", nativeQuery = true)
     List<BookTicketShowtimeDto> getAllFilmShowingThisWeek();
 
-    @Query(value = "SELECT seat.id , seat.name, ticket_price.seat_type as seatType, ticket_price.seat_code as seatCode, ticket_price.id as priceId, ticket_price.price as price, ticket.id as ticketId\n" +
-            "FROM movie.seat\n" +
-            "LEFT JOIN showtime ON showtime.id = seat.showtime_id\n" +
-            "left join ticket_price on seat.ticket_price_id = ticket_price.id\n" +
-            "left join ticket on seat.ticket_id = ticket.id\n" +
-            "where showtime.id = ?1", nativeQuery = true)
-    List<BookingSeatDTO> getAllSeatByShowtimeId(Long showtimeId);
+    @Query(value = "SELECT film.id as filmId, film.name as filmName, film.category as filmCategory, film.duration as filmDuration, " +
+            "film.directors as filmDirectors, film.actors as filmActors, film.age as filmAge, film.imageurl as filmImageUrl, " +
+            "showtime.id as showtimeId, showtime.cinema_room_id as cinemaRoomId, cinema_room.name as cinemaRoomName, " +
+            "showtime.day as showtimeDay, showtime.time as showtimeTime, " +
+            "showtime.film_technology as filmTechnology, showtime.sub_title as subtitle " +
+            "FROM film JOIN showtime ON film.id = showtime.film_id " +
+            "LEFT JOIN cinema_room on cinema_room.id = showtime.cinema_room_id " +
+            "WHERE film.id = ?1 AND showtime.day >= CURDATE() " +
+            "ORDER BY showtime.day, showtime.time",
+            nativeQuery = true)
+    List<BookTicketShowtimeDto> getShowtimesByFilmId(Long filmId);
 
-    @Query(value = "SELECT cinema_room.id as cinemaRoomId, cinema_room.row_seat as rowSeat, cinema_room.column_seat as columnSeat, cinema_room.seat_layout as seatLayout from showtime \n" +
-            "left join cinema_room on cinema_room.id = showtime.cinema_room_id\n" +
-            "where showtime.id = ?1 limit 1", nativeQuery = true)
+//    @Query(value = "SELECT seat.id as seatId, seat.name as seatName, ticket_price.seat_type as seatType, ticket_price.seat_code as seatCode, " +
+//            "ticket_price.id as priceId, ticket_price.price as price, ticket.id as ticketId\n" +
+//            "FROM seat\n" +
+//            "LEFT JOIN showtime ON showtime.id = seat.showtime_id\n" +
+//            "LEFT JOIN ticket_price ON seat.ticket_price_id = ticket_price.id\n" +
+//            "LEFT JOIN ticket ON seat.ticket_id = ticket.id\n" +
+//            "WHERE showtime.id = ?1", nativeQuery = true)
+//    List<Object[]> getAllSeatByShowtimeId(Long showtimeId);
+
+    @Query(value = "SELECT seat.id as seatId, seat.name as seatName, ticket_price.seat_type as seatType, ticket_price.seat_code as seatCode, " +
+            "ticket_price.id as priceId, ticket_price.price as price, ticket.id as ticketId\n" +
+            "FROM seat\n" +
+            "LEFT JOIN showtime ON showtime.id = seat.showtime_id\n" +
+            "LEFT JOIN ticket_price ON seat.ticket_price_id = ticket_price.id\n" +
+            "LEFT JOIN ticket ON seat.ticket_id = ticket.id\n" +
+            "WHERE showtime.id = ?1", nativeQuery = true)
+    List<Object[]> getAllSeatByShowtimeId(Long showtimeId);
+
+    @Query(value = "SELECT cinema_room.id as cinemaRoomId, cinema_room.row_seat as rowSeat, cinema_room.column_seat as columnSeat, " +
+            "cinema_room.seat_layout as seatLayout FROM showtime \n" +
+            "LEFT JOIN cinema_room ON cinema_room.id = showtime.cinema_room_id\n" +
+            "WHERE showtime.id = ?1 LIMIT 1", nativeQuery = true)
     CinemaRoomLayout getCinemaRoomLayoutByShowtimeId(Long showtimeId);
 
     @Query(value = "SELECT film.id as filmId, film.name as filmName, film.category as filmCategory, film.duration as filmDuration,\n" +

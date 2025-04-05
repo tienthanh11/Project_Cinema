@@ -1,0 +1,76 @@
+/*Film detail*/
+.film-detail {
+    margin: 5px 5px;
+}
+
+.film-detail-header {
+    height: 5rem;
+    padding-top: 10px;
+}
+
+.film-detail-header p {
+    background: -webkit-linear-gradient(#02a388 0%, rgba(12, 13, 13, 0.65));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-size: 2.5rem;
+    padding-top: 1rem;
+}
+
+.film-detail-image img {
+    border-radius: 20px;
+    max-width: 280px;
+    max-height: 450px;
+}
+.film-detail-info-name h1 {
+    width: 100%;
+    font-size: 45px;
+}
+.film-detail-info {
+    padding-left: 2rem;
+    width: auto;
+}
+
+.film-detail-info div span {
+    font-size: 20px;
+    line-height: 1.6;
+}
+
+.film-detail-info div p {
+    font-size: 20px;
+}
+
+.film-detail-content {
+    margin-bottom: 5px;
+    padding-top: 10px;
+}
+
+.film-detail-content div a {
+    font-size: 25px;
+    text-decoration: none;
+    background: -webkit-linear-gradient(#02a388 0%, rgba(12, 13, 13, 0.65));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;;
+}
+
+.btn-film-detail {
+    padding-top: 15px;
+}
+
+.img-age {
+    padding-top: 10px;
+}
+
+.img-age span img {
+    width: 5rem;
+}
+.description {
+    padding-top: 10px;
+}
+
+.description div p {
+    font-size: 25px;
+    line-height: 1.5;
+}
+.description div:nth-child(2) {
+    padding-left: 25%;
+}

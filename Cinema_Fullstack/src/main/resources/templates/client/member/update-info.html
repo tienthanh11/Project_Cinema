@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Cinema</title>
+    <base href="/">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="/template/layout/member.css">
+    <link rel="stylesheet" href="/template/css/content.css">
+    <link rel="stylesheet" href="/template/style.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <link rel="stylesheet" href="/template/bootstrap/css/bootstrap.css">
+
+    <style>
+        .image-container {
+            width: 100%;
+            margin-bottom: 1.5rem;
+        }
+
+        .avatar-input-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .avatar-wrapper {
+            width: 120px;
+            height: 120px;
+            background-color: #e6e6fa;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+    </style>
+</head>
+<body class="mat-typography">
+<div class="container-fluid">
+    <div th:replace="~{client/client-shared/layout/header.html}"></div>
+
+    <div class="content-inner row mb-5 mt-5">
+        <div class="col-md-3 sidebar-container">
+            <div th:replace="~{client/member/sidebar.html}"></div>
+        </div>
+        <div class="card text-dark mb-3 col-md-9 mx-0 px-0 form-check">
+            <div class="card-header" style="background-color:#02a388">
+                <h1 class="text-light card-text">Thông tin tài khoản</h1>
+            </div>
+            <div class="card-body">
+                <form th:action="@{/member/manager/info/update}" th:object="${membershipUpdate}" method="post"
+                      enctype="multipart/form-data">
+                    <input type="hidden" th:field="*{id}">
+                    <div class="mx-0 px-0 row d-flex justify-content-center image-container mb-4">
+                        <div class="avatar-input-wrapper">
+                            <div class="avatar-wrapper">
+                                <img class="avatar mx-0 px-0"
+                                     th:src="${membershipUpdate.imageURL != null ? membershipUpdate.imageURL : defaultImage}"
+                                     alt="Avatar">
+                            </div>
+                        </div>
+                        <small class="form-text text-danger" th:if="${errorMessage != null}"
+                               th:text="${errorMessage}"></small>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-6 pr-1">
+                            <div class="form-group">
+                                <label for="name" class="required font-weight-bold">Họ và tên</label>
+                                <input id="name" type="text" class="form-control" th:field="*{name}">
+                                <small class="form-text text-danger" th:if="${#fields.hasErrors('name')}"
+                                       th:errors="*{name}"></small>
+                            </div>
+                        </div>
+                        <div class="col-md-6 pr-1">
+                            <div class="form-group">
+                                <label for="imageUrl" class="font-weight-bold">Hình ảnh</label>
+                                <input type="file" class="form-control" id="imageUrl" name="imageFile"
+                                       accept=".jpg,.jpeg,.png">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-6 pr-1">
+                            <label for="email" class="font-weight-bold">Email</label>
+                            <input id="email" type="text" class="form-control" th:field="*{email}" readonly>
+
+                        </div>
+                        <div class="col-md-6 pr-1">
+                            <label for="memberCode" class="font-weight-bold">Thẻ thành viên</label>
+                            <input id="memberCode" type="text" class="form-control" th:field="*{memberCode}" readonly>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-6 pr-1">
+                            <div class="form-group">
+                                <label for="birthday" class="required font-weight-bold">Ngày Sinh</label>
+                                <input id="birthday" type="date" class="form-control"
+                                       th:value="${membershipUpdate.birthday != null ? #temporals.format(membershipUpdate.birthday, 'yyyy-MM-dd') : ''}"
+                                       name="birthday"/>
+                                <small class="form-text text-danger" th:if="${#fields.hasErrors('birthday')}"
+                                       th:errors="*{birthday}"></small>
+                            </div>
+                        </div>
+                        <div class="col-md-6 pr-1">
+                            <div class="form-group">
+                                <label for="card" class="required font-weight-bold">Chứng minh nhân dân</label>
+                                <input id="card" type="text" class="form-control" th:field="*{card}">
+                                <small class="form-text text-danger" th:if="${#fields.hasErrors('card')}"
+                                       th:errors="*{card}"></small>
+                                <small class="form-text text-danger" th:if="${existCard != null}"
+                                       th:text="${existCard}"></small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-6 pr-1">
+                            <div class="form-group">
+                                <label for="gender" class="required font-weight-bold">Giới tính</label>
+                                <div class="pt-1" id="gender">
+                                    <div class="form-check form-check-inline custom-radio-group">
+                                        <div class="form-check-item">
+                                            <input class="form-check-input custom-radio" type="radio" id="male"
+                                                   value="Nam" th:field="*{gender}" th:checked="${gender == 'Nam'}">
+                                            <label class="form-check-label mr-3" for="male">Nam</label>
+                                        </div>
+                                        <div class="form-check-item">
+                                            <input class="form-check-input custom-radio" type="radio" id="female"
+                                                   value="Nữ" th:field="*{gender}" th:checked="${gender == 'Nữ'}">
+                                            <label class="form-check-label mr-3" for="female">Nữ</label>
+                                        </div>
+                                        <div class="form-check-item">
+                                            <input class="form-check-input custom-radio" type="radio" id="other"
+                                                   value="Khác" th:field="*{gender}" th:checked="${gender == 'Khác'}">
+                                            <label class="form-check-label mr-3" for="other">Khác</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <small class="form-text text-danger" th:if="${#fields.hasErrors('gender')}"
+                                       th:errors="*{gender}"></small>
+                            </div>
+                        </div>
+                        <div class="col-md-6 pr-1">
+                            <div class="form-group">
+                                <label for="phone" class="required font-weight-bold">Số điện thoại</label>
+                                <input id="phone" type="text" class="form-control" th:field="*{phone}">
+                                <small class="form-text text-danger" th:if="${#fields.hasErrors('phone')}"
+                                       th:errors="*{phone}"></small>
+                                <small class="form-text text-danger" th:if="${existPhone != null}"
+                                       th:text="${existPhone}"></small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-4 pr-1">
+                            <div class="form-group">
+                                <label for="provinceId" class="required font-weight-bold">Tỉnh/Thành Phố</label>
+                                <select id="provinceId" class="form-control" th:field="*{provinceId}"
+                                        onchange="this.form.submit()">
+                                    <option value="">Chọn...</option>
+                                    <option th:each="province : ${provinces}" th:value="${province.id}"
+                                            th:text="${province.name}"></option>
+                                </select>
+                                <small class="form-text text-danger" th:if="${#fields.hasErrors('provinceId')}"
+                                       th:errors="*{provinceId}"></small>
+                            </div>
+                        </div>
+                        <div class="col-md-4 pr-1">
+                            <div class="form-group">
+                                <label for="districtId" class="required font-weight-bold">Quận/Huyện</label>
+                                <select id="districtId" class="form-control" th:field="*{districtId}"
+                                        onchange="this.form.submit()">
+                                    <option value="">Chọn...</option>
+                                    <option th:each="district : ${districts}" th:value="${district.id}"
+                                            th:text="${district.name}"></option>
+                                </select>
+                                <small class="form-text text-danger" th:if="${#fields.hasErrors('districtId')}"
+                                       th:errors="*{districtId}"></small>
+                            </div>
+                        </div>
+                        <div class="col-md-4 pr-1">
+                            <div class="form-group">
+                                <label for="wardId" class="required font-weight-bold">Xã/Phường</label>
+                                <select id="wardId" class="form-control" th:field="*{wardId}">
+                                    <option value="">Chọn...</option>
+                                    <option th:each="ward : ${wards}" th:value="${ward.id}"
+                                            th:text="${ward.name}"></option>
+                                </select>
+                                <small class="form-text text-danger" th:if="${#fields.hasErrors('wardId')}"
+                                       th:errors="*{wardId}"></small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group row mt-5 d-flex justify-content-center">
+                        <button type="submit" class="btn btn-success btn-progress btn-progress-sm">Xác nhận</button>
+                        <a href="/" class="btn btn-dark btn-progress btn-progress-sm ml-3">Quay lại</a>
+                    </div>
+                    <div th:if="${successMessage}" class="alert alert-success mt-3" th:text="${successMessage}"></div>
+                    <div th:if="${errorMessage}" class="alert alert-danger mt-3" th:text="${errorMessage}"></div>
+                </form>
+            </div>
+            `
+        </div>
+    </div>
+    <div th:replace="~{client/client-shared/layout/footer.html}"></div>
+</div>
+
+<script src="/template/bootstrap/jquery-3.6.0.min.js"></script>
+<script src="/template/bootstrap/js/bootstrap.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
+        crossorigin="anonymous"></script>
+</body>
+</html>

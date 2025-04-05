@@ -6,8 +6,6 @@
     <base href="/">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="icon" type="image/x-icon" href="favicon.ico">
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
-          rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="stylesheet" href="/template/layout/navbar.css">
@@ -24,7 +22,7 @@
         <div class="navbar-default">
             <div class="navbar-header">
                 <nav class="navbar navbar-expand-lg">
-                    <h1><a href='/'><span>A</span>0720I1 <span>C</span>inema</a></h1>
+                    <h1><a th:href="@{/}"><span>C</span>inema</a></h1>
                     <button class="navbar-toggler" type="button" data-toggle="collapse"
                             data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false"
                             aria-label="Toggle navigation">
@@ -33,33 +31,22 @@
                     <div class="collapse navbar-collapse navbar-collapse-margin justify-content-end"
                          id="navbarNavDropdown">
                         <ul class="navbar-nav d-flex justify-content-end">
-                            <li class="nav-item active" *ngIf="['ROLE_ADMIN'].indexOf(role) === -1">
-                                <a class="nav-link nav-link-custom" href='/'>TRANG CHỦ <span class="sr-only">(current)</span></a>
+                            <li class="nav-item" th:unless="${isAdmin}">
+                                <a class="nav-link nav-link-custom" th:href="@{/}">Trang chủ</a>
                             </li>
-                            <li class="nav-item" *ngIf="['ROLE_ADMIN'].indexOf(role) !== -1">
-                                <a class="nav-link nav-link-custom" (click)="onClickToAdmin()">ADMIN <span
-                                        class="sr-only">(current)</span></a>
-                            </li>
-                            <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle nav-link-custom" href="#"
-                                   id="navbarDropdownMenuLink" role="button" data-toggle="dropdown"
-                                   aria-haspopup="true" aria-expanded="false">
-                                    PHIM
-                                </a>
-                                <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                                    <a class="dropdown-item" (click)="getShowing()">Phim đang chiếu</a>
-                                    <a class="dropdown-item" href="#">Phim sắp chiếu</a>
-                                </div>
+                            <li class="nav-item" th:if="${isAdmin}">
+                                <a class="nav-link nav-link-custom" th:href="@{/admin/film}">ADMIN</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link nav-link-custom" href="/book/film-selection">Đặt vé </a>
+                                <a class="nav-link nav-link-custom" th:href="@{/book/film-selection}">Đặt vé</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link nav-link-custom" href='/ticket-price'>Giá vé </a>
+                                <a class="nav-link nav-link-custom" th:href="@{/ticket-price}">Giá vé</a>
                             </li>
-                            <li class="nav-item" *ngIf="isLoggedIn">
+                            <li class="nav-item" th:if="${username != null}">
                                 <a class="nav-link nav-link-custom truncate text-left"
-                                   href="/member/manager/">{{username}} </a>
+                                   th:href="@{/member/manager/info/{username}(username=${username})}"
+                                   th:text="${username}"></a>
                             </li>
                         </ul>
                     </div>

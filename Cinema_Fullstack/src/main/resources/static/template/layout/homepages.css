@@ -384,36 +384,31 @@ input[type="submit"]:hover {
 .promote {
     display: flex;
     justify-content: center;
+    align-items: center;
+    gap: 20px;
+    padding: 20px;
 }
 
-.promote .promote-main {
+.promote-main {
     height: 42rem;
     width: 35rem;
-    padding-top: 10px;
 }
-
-.promote img {
-    position: relative;
-    opacity: 1;
-    height: 20rem;
-    width: 15rem;
-    transition: transform .5s;
-}
-
-.list-promote span img:hover {
-    opacity: 0.8;
-    transform: scale(1.1);
-}
-
 
 .list-promote {
-    display: flex;
-    flex-wrap: wrap;
-    margin-left: 3px;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
 }
 
-.list-promote span {
-    padding: 10px;
+.list-promote img {
+    height: 20rem;
+    width: 15rem;
+    transition: transform .5s, opacity .3s;
+}
+
+.list-promote img:hover {
+    opacity: 0.8;
+    transform: scale(1.1);
 }
 
 /*Top movie*/

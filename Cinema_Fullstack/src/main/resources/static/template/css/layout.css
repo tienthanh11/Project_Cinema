@@ -100,13 +100,23 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .w3_agilits_banner_bootm {
-    padding: 1em 0 0.2em 0;
-    background: #fe423f;
+    padding: 10px 0;
+    background: #e53935;
 }
 
 .w3_agilits_inner_bottom {
-    margin: 0 auto;
-    padding: 0 4em;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 30px;
+}
+
+.red-bar {
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
 }
 
 .red-bar li {
@@ -115,6 +125,12 @@ h1, h2, h3, h4, h5, h6 {
     display: inline-block;
     color: #fff;
     padding: 2px;
+}
+
+.material-icons {
+    font-size: 20px;
+    color: white;
+    margin-right: 8px;
 }
 
 a {
@@ -137,6 +153,28 @@ a.login {
 a.login:hover {
     background-color: #02a388;
     color: #000000;
+}
+
+.login-button {
+    background-color: black;
+    color: white;
+    font-weight: bold;
+    padding: 8px 12px;
+    text-decoration: none;
+    border-radius: 4px;
+    display: inline-block;
+    transition: 0.3s;
+}
+
+.login-button:hover {
+    background-color: #02a388;
+    color: black;
+}
+
+.username-text {
+    color: white;
+    font-weight: bold;
+    font-size: 16px;
 }
 
 .w3_breadcrumb {
@@ -167,6 +205,7 @@ a.login:hover {
 .contact {
     background: #0c0d0d;
     padding: 3em 0 1em 0;
+    text-align: center;
 }
 
 .footer-w3lagile-inner {
@@ -188,11 +227,10 @@ a.login:hover {
 }
 
 .bottom-links-agile {
-    text-align: center;
     border-top: 1px solid #1a1d1d;
     border-bottom: 1px solid #1a1d1d;
     padding: 1.5em 0;
-    margin: 3em 0 2em 0;
+    margin-bottom: 2em;
 }
 
 .bottom-links-agile li {
@@ -201,18 +239,23 @@ a.login:hover {
 }
 
 .bottom-links-agile li a {
-    font-size: 14px;
-    color: #606161;
+    font-size: 16px;
+    color: #b3b3b3;
     text-transform: uppercase;
     letter-spacing: 1px;
+    transition: color 0.3s ease;
+}
+
+.bottom-links-agile li a:hover {
+    color: #ffffff;
 }
 
 .follow {
-    text-align: center;
     font-size: 1.5em;
     color: #fff;
     text-transform: uppercase;
     letter-spacing: 1px;
+    margin-bottom: 1em;
 }
 
 .w3agile_footer_copy {
@@ -222,20 +265,27 @@ a.login:hover {
 
 .social-icons {
     list-style: none;
-    margin: 1.5em auto;
-    text-align: center;
-    padding-inline-start: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    gap: 15px;
 }
 
 .social-icons li {
     display: inline-block;
-    margin-right: 6px;
 }
 
 .social-icons li a {
-    text-decoration: none;
-    font-size: 16px;
-    color: #000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 45px;
+    height: 45px;
+    border: 1px solid #fff;
+    border-radius: 4px;
+    font-size: 20px;
+    color: #fff;
+    transition: 0.3s ease-in-out;
 }
 
 .social-icons li a i.fa {
@@ -253,3 +303,9 @@ a.login:hover {
     -ms-transition: all 0.5s ease-in-out;
     color: #fff;
 }
+
+.social-icons li a:hover {
+    background-color: #fff;
+    color: #0c0d0d;
+}
+

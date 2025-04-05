@@ -1,13 +1,23 @@
 package org.example.cinema_fullstack.services.Impl;
 
 import org.example.cinema_fullstack.models.dto.film.*;
+import org.example.cinema_fullstack.models.entity.Film;
 import org.example.cinema_fullstack.repositories.FilmRepository;
 import org.example.cinema_fullstack.services.FilmService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -16,6 +26,8 @@ import java.util.Random;
 public class FilmServiceImpl implements FilmService {
     @Autowired
     private FilmRepository filmRepository;
+
+    private static final String UPLOAD_DIR = "src/main/resources/static/uploads/";
 
     @Override
     public Page<ListFilmDTO> getListFilm(Pageable pageable) {
@@ -28,16 +40,39 @@ public class FilmServiceImpl implements FilmService {
     }
 
     @Override
+    @Transactional
     public void updateFilm(UpdateFilmDTO updateFilmDTO) {
+        String imageUrl = updateFilmDTO.getImageURL();
+        if (updateFilmDTO.getImageFile() != null && !updateFilmDTO.getImageFile().isEmpty()) {
+            try {
+                String originalFileName = updateFilmDTO.getImageFile().getOriginalFilename();
+                String timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy-HHmmss"));
+                String fileName = timestamp + "-" + originalFileName;
+
+                Path uploadPath = Paths.get(UPLOAD_DIR);
+                if (!Files.exists(uploadPath)) {
+                    Files.createDirectories(uploadPath);
+                }
+
+                Path filePath = uploadPath.resolve(fileName);
+                Files.write(filePath, updateFilmDTO.getImageFile().getBytes());
+
+                imageUrl = "/uploads/" + fileName;
+            } catch (Exception e) {
+                throw new RuntimeException("Failed to upload image: " + e.getMessage());
+            }
+        }
+
+        // Update the film in the database
         this.filmRepository.updateFilm(
                 updateFilmDTO.getId(),
                 updateFilmDTO.getActors().replaceAll("\\s{2,}", " "),
                 updateFilmDTO.getAge(),
-                updateFilmDTO.getCategory(),
+                updateFilmDTO.getCategoryAsString(),
                 updateFilmDTO.getDescriptions().replaceAll("\\s{2,}", " "),
                 updateFilmDTO.getDirectors().replaceAll("\\s{2,}", " "),
                 updateFilmDTO.getDurations(),
-                updateFilmDTO.getImageURL(),
+                imageUrl,
                 updateFilmDTO.getName().replaceAll("\\s{2,}", " "),
                 updateFilmDTO.getStudio(),
                 updateFilmDTO.getStartDate(),
@@ -46,20 +81,37 @@ public class FilmServiceImpl implements FilmService {
     }
 
     @Override
-    public void createFilm(CreateFilmDTO createFilmDTO) {
-        filmRepository.createFilm(
-                createFilmDTO.getActors().replaceAll("\\s{2,}", " "),
-                createFilmDTO.getAge(),
-                createFilmDTO.getCategory(),
-                createFilmDTO.getDescription().replaceAll("\\s{2,}", " "),
-                createFilmDTO.getDirectors().replaceAll("\\s{2,}", " "),
-                createFilmDTO.getDuration(),
-                createFilmDTO.getImageURL(),
-                createFilmDTO.getName().replaceAll("\\s{2,}", " "),
-                createFilmDTO.getStudio(),
-                createFilmDTO.getStartDate(),
-                createFilmDTO.getEndDate(),
-                createFilmDTO.getTrailers());
+    public void createFilm(CreateFilmDTO createFilmDTO) throws Exception {
+        String fileName = null;
+        if (createFilmDTO.getImageFile() != null && !createFilmDTO.getImageFile().isEmpty()) {
+            MultipartFile imageFile = createFilmDTO.getImageFile();
+            String originalFileName = StringUtils.cleanPath(imageFile.getOriginalFilename());
+            String timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy-HHmmss"));
+            fileName = timestamp + "-" + originalFileName;
+
+            File directory = new File(UPLOAD_DIR);
+            if (!directory.exists()) {
+                directory.mkdirs();
+            }
+
+            Path path = Paths.get(UPLOAD_DIR + fileName);
+            Files.write(path, imageFile.getBytes());
+        }
+
+        Film film = new Film();
+        film.setName(createFilmDTO.getName().trim());
+        film.setImageURL("/uploads/" + fileName);
+        film.setStartDate(createFilmDTO.getStartDate());
+        film.setEndDate(createFilmDTO.getEndDate());
+        film.setActors(createFilmDTO.getActors().trim());
+        film.setStudio(createFilmDTO.getStudio().trim());
+        film.setDuration(createFilmDTO.getDuration());
+        film.setDirectors(createFilmDTO.getDirectors().trim());
+        film.setTrailer(createFilmDTO.getTrailers().trim());
+        film.setCategory(createFilmDTO.getCategoryAsString().trim());
+        film.setDescription(createFilmDTO.getDescription().trim());
+        film.setAge(createFilmDTO.getAge());
+        filmRepository.save(film);
     }
 
     @Override

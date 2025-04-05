@@ -28,9 +28,9 @@ public interface FilmRepository extends JpaRepository<Film, Integer> {
      */
     @Transactional
     @Modifying
-    @Query(value = "update film as f set f.actors =?2, f.age =?3, f.category =?4 ,f.description =?5, f.directors =?6, f.duration=?7, f.imageUrl=?8, f.name=?9,  f.studio =?10, f.start_date = ?11, f.end_date =?12, f.trailer =?13\n" +
+    @Query(value = "update film as f set f.actors = ?2, f.age = ?3, f.category = ?4, f.description = ?5, f.directors = ?6, f.duration = ?7, f.imageurl = ?8, f.name = ?9, f.studio = ?10, f.start_date = ?11, f.end_date = ?12, f.trailer = ?13 " +
             "where f.id = ?1", nativeQuery = true)
-    void updateFilm(long id, String actors, String age, String category, String description, String directors, int duration, String imageUrl, String name, String studio, LocalDate start_date, LocalDate end_date, String trailers);
+    void updateFilm(long id, String actors, String age, String category, String description, String directors, int duration, String imageUrl, String name, String studio, LocalDate startDate, LocalDate endDate, String trailers);
 
     /**
      * Duy
@@ -48,7 +48,10 @@ public interface FilmRepository extends JpaRepository<Film, Integer> {
     /**
      * Duy
      */
-    @Query(value = "select film.id, film.name as nameFilm, film.start_date as Start_date, film.studio, film.duration from `film` where film.name like %?1%", nativeQuery = true)
+    @Query(value = "SELECT film.id, film.name AS nameFilm, film.start_date AS start_date, film.studio, film.duration " +
+            "FROM film " +
+            "WHERE film.name LIKE CONCAT('%', ?1, '%')",
+            nativeQuery = true)
     Page<ListFilmDTO> searchByName(String name, Pageable pageable);
 
     /**

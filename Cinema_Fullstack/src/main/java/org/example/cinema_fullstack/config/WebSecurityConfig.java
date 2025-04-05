@@ -30,33 +30,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         auth.userDetailsService(userDetailsService).passwordEncoder(encoder());
     }
 
-//    @Override
-//    protected void configure(HttpSecurity http) throws Exception {
-//        http
-//                .csrf().disable();
-//
-//        http.authorizeRequests().antMatchers("/login").permitAll();
-////        http.authorizeRequests().antMatchers("/customer/**").access("hasAnyRole('ROLE_EMPLOYEE', 'ROLE_CUSTOMER')");
-////        http.authorizeRequests().antMatchers("/employee/**", "/contract/**", "/service/**").hasRole("EMPLOYEE");
-//
-//        //http.authorizeRequests().antMatchers("/admin/**").hasRole("ADMIN");
-//        // thiết lập action trả về khi truy cập trang không có quyền
-//        http.authorizeRequests().and().exceptionHandling().accessDeniedPage("/deny");
-//
-//        http.authorizeRequests().and().formLogin()
-//                .loginPage("/login")
-//                .loginProcessingUrl("/doLogin")
-//                .defaultSuccessUrl("/")
-//                .failureUrl("/login?error=true")
-//                .usernameParameter("username")
-//                .passwordParameter("password")
-//                .and().logout().logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
-//                .logoutSuccessUrl("/login");
-//
-//        http
-//                .rememberMe().tokenValiditySeconds(60 * 60 * 24 * 1); // 1 day
-//    }
-
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         // Tắt CSRF nếu không cần thiết (chỉ nên tắt khi sử dụng API không cần bảo vệ CSRF)
@@ -64,12 +37,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
         // Cấu hình cho trang homepages có thể truy cập công khai
         http.authorizeRequests()
-                .antMatchers("/", "/login").permitAll()  // Cho phép trang homepages và login truy cập công khai
-//                .antMatchers("/customer/**").hasAnyRole("EMPLOYEE", "CUSTOMER") // chỉ cho phép các vai trò EMPLOYEE hoặc CUSTOMER truy cập
-//                .antMatchers("/employee/**", "/contract/**", "/service/**").hasRole("EMPLOYEE") // chỉ cho phép role EMPLOYEE
-//                .antMatchers("/admin/**").hasRole("ADMIN") // chỉ cho phép role ADMIN
-                // Nếu không có quyền, chuyển đến trang /deny
-                .and().exceptionHandling().accessDeniedPage("/deny");
+                .antMatchers("/**", "/login", "/book/**", "/paypal/**").permitAll()  // Cho phép trang homepages và login truy cập công khai
+                .antMatchers("/member/**", "/book/member/**").access("hasAnyRole('ROLE_MEMBER', 'ROLE_ADMIN')");
+        http.authorizeRequests().antMatchers("/admin/**").hasRole("ADMIN");
+        http.authorizeRequests().and().exceptionHandling().accessDeniedPage("/deny");
 
         // Cấu hình đăng nhập
         http.formLogin()
@@ -82,13 +53,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .logout()
                 .logoutRequestMatcher(new AntPathRequestMatcher("/logout")) // URL để logout
-                .logoutSuccessUrl("/login"); // URL sau khi logout thành công
+                .logoutSuccessUrl("/") // URL sau khi logout thành công
+                .deleteCookies("JSESSIONID") // Xoá cookie phiên
+                .invalidateHttpSession(true);
 
         // Cấu hình "Remember Me"
         http.rememberMe().tokenValiditySeconds(60 * 60 * 24 * 1); // 1 ngày
-    }
-
-
+        }
 }
 
 

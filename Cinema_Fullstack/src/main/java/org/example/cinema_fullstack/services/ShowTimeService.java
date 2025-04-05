@@ -2,9 +2,7 @@ package org.example.cinema_fullstack.services;
 
 
 import org.example.cinema_fullstack.models.dto.showtime.CreateShowtimeDTO;
-import org.example.cinema_fullstack.models.dto.ticket.BookTicketShowtimeDto;
-import org.example.cinema_fullstack.models.dto.ticket.BookingSeatDTO;
-import org.example.cinema_fullstack.models.dto.ticket.CinemaRoomLayout;
+import org.example.cinema_fullstack.models.dto.ticket.*;
 import org.example.cinema_fullstack.models.entity.CinemaRoom;
 import org.example.cinema_fullstack.models.entity.Film;
 import org.example.cinema_fullstack.models.entity.Showtime;
@@ -27,9 +25,13 @@ public interface ShowTimeService {
 
     List<BookTicketShowtimeDto> getAllFilmShowingThisWeek();
 
-    List<BookingSeatDTO> getAllSeatByShowtimeId(long showtimeId);
+    List<BookTicketShowtimeDto> getShowtimesByFilmId(Long filmId);
 
-    CinemaRoomLayout getCinemaRoomLayoutByShowtimeId(long showtimeId);
+    ShowtimeDto getShowtimeById(Long showtimeId);
+
+    List<SeatDto> getAllSeatByShowtimeId(Long showtimeId);
+
+    CinemaRoomLayoutDto getCinemaRoomLayoutByShowtimeId(Long showtimeId);
 
     BookTicketShowtimeDto getShowtimeByInvoiceId(long invoiceId);
 

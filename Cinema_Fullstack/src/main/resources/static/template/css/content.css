@@ -101,31 +101,31 @@
     cursor: default;
 }
 
-.showtime-label {
-    width: 15%;
-    font-weight: 600;
-    text-transform: uppercase;
-    font-size: 12px;
-    display: inline-block;
-    padding: 0.6rem 0.3rem;
-    list-style: none;
-    cursor: pointer;
-    letter-spacing: 1px;
-    margin: 2px 3px;
-    transition: .5s ease-in;
-    -webkit-transition: .5s ease-in;
-    -moz-transition: .5s ease-in;
-    -o-transition: .5s ease-in;
-    -ms-transition: .5s ease-in;
-    color: #ffffff;
-    background: #fe423f;
-    border: none;
-}
+/*.showtime-label {*/
+/*    width: 15%;*/
+/*    font-weight: 600;*/
+/*    text-transform: uppercase;*/
+/*    font-size: 12px;*/
+/*    display: inline-block;*/
+/*    padding: 0.6rem 0.3rem;*/
+/*    list-style: none;*/
+/*    cursor: pointer;*/
+/*    letter-spacing: 1px;*/
+/*    margin: 2px 3px;*/
+/*    transition: .5s ease-in;*/
+/*    -webkit-transition: .5s ease-in;*/
+/*    -moz-transition: .5s ease-in;*/
+/*    -o-transition: .5s ease-in;*/
+/*    -ms-transition: .5s ease-in;*/
+/*    color: #ffffff;*/
+/*    background: #fe423f;*/
+/*    border: none;*/
+/*}*/
 
-.showtime-label:hover {
-    color: white;
-    background-color: #424546;
-}
+/*.showtime-label:hover {*/
+/*    color: white;*/
+/*    background-color: #424546;*/
+/*}*/
 
 .btn-progress {
     outline: none;

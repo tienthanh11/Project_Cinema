@@ -1,13 +1,17 @@
 package org.example.cinema_fullstack.services.Impl;
 
+import org.example.cinema_fullstack.common.SeatNotAvailableException;
 import org.example.cinema_fullstack.models.dto.ticket.BookTicketShowtimeDto;
+import org.example.cinema_fullstack.models.dto.ticket.BookingInformation;
 import org.example.cinema_fullstack.models.dto.ticket.BookingInvoiceDTO;
 import org.example.cinema_fullstack.models.dto.ticket.BookingTicketDTO;
 import org.example.cinema_fullstack.models.entity.Invoice;
+import org.example.cinema_fullstack.models.entity.Seat;
 import org.example.cinema_fullstack.repositories.InvoiceRepository;
 import org.example.cinema_fullstack.repositories.MemberShipRepository;
 import org.example.cinema_fullstack.repositories.PaymentMethodRepository;
 import org.example.cinema_fullstack.services.InvoiceService;
+import org.example.cinema_fullstack.services.SeatService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -15,6 +19,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class InvoiceServiceImpl implements InvoiceService {
@@ -27,8 +32,30 @@ public class InvoiceServiceImpl implements InvoiceService {
     @Autowired
     PaymentMethodRepository paymentMethodRepository;
 
+    @Autowired
+    private SeatService seatService;
+
 //    @Autowired
 //    private JavaMailSender emailSender;
+
+    @Override
+    public void checkSeatAvailable(BookingInformation bookingInformation) throws SeatNotAvailableException {
+        Long showtimeId = bookingInformation.getShowtimeId();
+        List<Long> seatIds = bookingInformation.getSeatIdList();
+
+        if (seatIds == null || seatIds.isEmpty()) {
+            throw new SeatNotAvailableException("Danh sách ghế không được để trống");
+        }
+
+        List<Seat> bookedSeats = seatService.findBookedSeatsForShowtime(seatIds, showtimeId);
+
+        if (!bookedSeats.isEmpty()) {
+            String unavailableSeats = bookedSeats.stream()
+                    .map(Seat::getName)
+                    .collect(Collectors.joining(", "));
+            throw new SeatNotAvailableException("Ghế bạn chọn đã được đặt bởi người dùng khác: " + unavailableSeats);
+        }
+    }
 
     @Override
     public Invoice createInvoice(long membershipId, long paymentMethodId, String code) {

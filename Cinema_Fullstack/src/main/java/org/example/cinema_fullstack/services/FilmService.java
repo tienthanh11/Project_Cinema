@@ -10,7 +10,7 @@ public interface FilmService {
     Page<ListFilmDTO> getListFilm(Pageable pageable);
     FilmViewDTO getFilmDTOById(long id);
     void updateFilm(UpdateFilmDTO updateFilmDTO);
-    void createFilm(CreateFilmDTO createFilmDTO);
+    void createFilm(CreateFilmDTO createFilmDTO) throws Exception;
     void deleteFilm(long id);
     Page<ListFilmDTO> searchByName(String name, Pageable pageable);
     Page<ListFilmDTO> searchByNameAndStartDate(String name, String startDate, Pageable pageable);

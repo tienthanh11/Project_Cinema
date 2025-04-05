@@ -1,16 +1,22 @@
 package org.example.cinema_fullstack.controllers;
 
 import org.example.cinema_fullstack.models.dto.film.FilmDTO;
+import org.example.cinema_fullstack.models.dto.film.FilmDetailDTO;
 import org.example.cinema_fullstack.models.dto.film.FilmTopDTO;
+import org.example.cinema_fullstack.models.dto.film.TicketPriceDTO;
+import org.example.cinema_fullstack.models.dto.ticket.BookTicketShowtimeDto;
 import org.example.cinema_fullstack.services.FilmService;
+import org.example.cinema_fullstack.services.AuthService;
+import org.example.cinema_fullstack.services.ShowTimeService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import javax.servlet.http.HttpSession;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -21,9 +27,15 @@ public class HomeController {
     @Autowired
     private FilmService filmService;
 
+    @Autowired
+    private ShowTimeService showTimeService;
+
+    @Autowired
+    private AuthService authService;
+
     @RequestMapping("/")
     public String homepage(Model model,
-                           HttpSession session,
+                           Authentication authentication,
                            @RequestParam(required = false) String nameSearch,
                            @RequestParam(required = false) Boolean isShowing) {
 
@@ -47,25 +59,32 @@ public class HomeController {
         model.addAttribute("nameSearch", nameSearch);
         model.addAttribute("isShowing", isShowing);
 
-        String username = (String) session.getAttribute("username");
-        model.addAttribute("username", username);
-
-        return "client/homepages";
+        authService.addAuthAttributes(model, authentication);
+        return "client/home/homepages";
     }
 
+    @GetMapping("/detail/{id}")
+    public String getFilmDetail(@PathVariable("id") Long id, Model model, Authentication authentication) {
+        FilmDetailDTO filmDetail = filmService.getFilmById(id);
+        List<BookTicketShowtimeDto> showtimes = showTimeService.getShowtimesByFilmId(id);
 
-    @RequestMapping("/search/showing")
-    public String searchUpShowingFilms(Model model, @RequestParam String nameSearch) {
-        List<FilmDTO> films = filmService.searchUpShowingFilmDTO(nameSearch);
-        model.addAttribute("films", films);
-        return "client/homepages";
+        model.addAttribute("filmDetail", filmDetail);
+        model.addAttribute("showtimes", showtimes);
+
+        authService.addAuthAttributes(model, authentication);
+        return "client/home/film-detail";
     }
 
-    @RequestMapping("/search/upcoming")
-    public String searchUpComingFilms(Model model, @RequestParam String nameSearch) {
-        List<FilmDTO> films = filmService.searchUpComingFilmDTO(nameSearch);
-        model.addAttribute("films", films);
-        return "client/homepages";
+    @GetMapping("/ticket-price")
+    public String getTicketPricePage(Model model, Authentication authentication) {
+        List<FilmTopDTO> topFilms = filmService.getTopFilm();
+        List<TicketPriceDTO> ticketPrices = filmService.listTicketPrice();
+
+        model.addAttribute("topFilms", topFilms);
+        model.addAttribute("ticketPrices", ticketPrices);
+
+        authService.addAuthAttributes(model, authentication);
+        return "client/home/ticket-price";
     }
 
     @RequestMapping("/login")
