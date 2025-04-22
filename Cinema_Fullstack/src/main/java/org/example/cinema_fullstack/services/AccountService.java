@@ -1,6 +1,7 @@
 package org.example.cinema_fullstack.services;
 
 import org.example.cinema_fullstack.models.dto.account.AccountDTO;
+import org.example.cinema_fullstack.models.dto.account.ResetPasswordDTO;
 import org.example.cinema_fullstack.models.entity.Account;
 
 public interface AccountService {
@@ -13,7 +14,8 @@ public interface AccountService {
     boolean checkChangePassword(Account account, AccountDTO accountDTO);
     boolean checkNewPwEqualOldPw(Account account,AccountDTO accountDTO);
     void changePassword(Account account,AccountDTO accountDTO);
+    void changeResetPassword(Account account, ResetPasswordDTO resetPasswordDTO);
     String generateCode();
-//    void sendEmailOTP(String email, String code);
+    void sendEmailOTP(String email, String code);
     void changePasswordByForgot(String password,Account account);
 }

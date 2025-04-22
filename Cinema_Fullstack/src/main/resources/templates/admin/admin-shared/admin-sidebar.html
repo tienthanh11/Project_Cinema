@@ -77,12 +77,12 @@
                                     <p>Thêm suất chiếu</p>
                                 </a>
                             </li>
-                            <li class="nav-item">
-                                <a th:href="@{/admin/showtime}" class="nav-link">
-                                    <i class="fas fa-list nav-icon"></i>
-                                    <p>Danh sách suất chiếu</p>
-                                </a>
-                            </li>
+<!--                            <li class="nav-item">-->
+<!--                                <a th:href="@{/admin/showtime}" class="nav-link">-->
+<!--                                    <i class="fas fa-list nav-icon"></i>-->
+<!--                                    <p>Danh sách suất chiếu</p>-->
+<!--                                </a>-->
+<!--                            </li>-->
                         </ul>
                     </li>
                     <li class="nav-item">
@@ -105,6 +105,47 @@
                             </li>
                         </ul>
                     </li>
+
+                    <li class="nav-item">
+                        <div class="nav-link">
+                            <i class="nav-icon fas fa-users"></i>
+                            <p>Thành viên <i class="fas fa-angle-left right"></i></p>
+                        </div>
+                        <ul class="nav nav-treeview">
+<!--                            <li class="nav-item">-->
+<!--                                <a href="#" class="nav-link">-->
+<!--                                    <i class="fas fa-plus-circle nav-icon"></i>-->
+<!--                                    <p>Thêm thành viên</p>-->
+<!--                                </a>-->
+<!--                            </li>-->
+                            <li class="nav-item">
+                                <a th:href="@{/admin/memberships}" class="nav-link">
+                                    <i class="fas fa-list nav-icon"></i>
+                                    <p>Danh sách thành viên</p>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+<!--                    <li class="nav-item">-->
+<!--                        <div class="nav-link">-->
+<!--                            <i class="nav-icon fas fa-id-badge"></i>-->
+<!--                            <p>Nhân viên <i class="fas fa-angle-left right"></i></p>-->
+<!--                        </div>-->
+<!--                        <ul class="nav nav-treeview">-->
+<!--                            <li class="nav-item">-->
+<!--                                <a href="#" class="nav-link">-->
+<!--                                    <i class="fas fa-plus-circle nav-icon"></i>-->
+<!--                                    <p>Thêm nhân viên</p>-->
+<!--                                </a>-->
+<!--                            </li>-->
+<!--                            <li class="nav-item">-->
+<!--                                <a href="#" class="nav-link">-->
+<!--                                    <i class="fas fa-list nav-icon"></i>-->
+<!--                                    <p>Danh sách nhân viên</p>-->
+<!--                                </a>-->
+<!--                            </li>-->
+<!--                        </ul>-->
+<!--                    </li>-->
                     <li class="nav-item">
                         <a th:href="@{/logout}" class="nav-link text-light"
                            onclick="event.preventDefault(); document.getElementById('logout-form').submit();">

@@ -35,6 +35,6 @@ public class Membership {
     private Account account;
 
    @JsonIgnore
-    @OneToMany(mappedBy = "membership")
+   @OneToMany(mappedBy = "membership", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Invoice> invoiceList;
 }

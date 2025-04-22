@@ -30,7 +30,7 @@
                 <div>
                 <span th:if="${username == null}">
                     <a th:href="@{/login}" class="login-button">Đăng nhập</a>
-                    <a th:href="@{/member/register}" class="login-button ml-2">Đăng ký</a>
+                    <a th:href="@{/register}" class="login-button ml-2">Đăng ký</a>
                 </span>
                     <span th:if="${username != null}" class="username-text">
                         Chào, <span th:text="${username}"></span>

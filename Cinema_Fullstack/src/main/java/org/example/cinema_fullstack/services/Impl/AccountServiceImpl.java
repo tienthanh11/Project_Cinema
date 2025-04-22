@@ -1,13 +1,19 @@
 package org.example.cinema_fullstack.services.Impl;
 
 import org.example.cinema_fullstack.models.dto.account.AccountDTO;
+import org.example.cinema_fullstack.models.dto.account.ResetPasswordDTO;
 import org.example.cinema_fullstack.models.entity.Account;
 import org.example.cinema_fullstack.repositories.AccountRepository;
 import org.example.cinema_fullstack.services.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.mail.MessagingException;
+import javax.mail.internet.MimeMessage;
 import java.util.Random;
 
 @Service
@@ -19,8 +25,8 @@ public class AccountServiceImpl implements AccountService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-//    @Autowired
-//    private JavaMailSender emailSender;
+    @Autowired
+    private JavaMailSender emailSender;
 
     @Override
     public void createAccount(int isEnable, String password, String username) {
@@ -64,24 +70,36 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
+    public void changeResetPassword(Account account, ResetPasswordDTO resetPasswordDTO) {
+        accountRepository.changePassword(passwordEncoder.encode(resetPasswordDTO.getNewPassword()), account.getUsername());
+    }
+
+    @Override
     public String generateCode() {
         return "" + (new Random().nextInt(900000) + 100000);
     }
 
-//    @Override
-//    public void sendEmailOTP(String email, String code) {
-//        SimpleMailMessage message = new SimpleMailMessage();
-//        message.setTo(email);
-//        String htmlMsg = "<h3>Your code is <i style='color: green'>" + code + "<i></h3>" +
-//                "<p style='color: red; font-size: 25px;'>" +
-//                "A0720I1 <p>";
-//        message.setSubject("Email lấy lại mật khẩu từ A0720I1");
-//        message.setText("Chào bạn!\n"
-//                + "Rạp chiếu phim A0720I1 gửi bạn mã code OTP bên dưới để đổi lại mật khẩu.\n"
-//                + "Mã CODE bao gồm 6 số : " + code + "\n\n"
-//                + "Thanks and regards!");
-//        this.emailSender.send(message);
-//    }
+    @Override
+    public void sendEmailOTP(String email, String code) {
+        try {
+            MimeMessage message = emailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+
+            helper.setTo(email);
+            helper.setSubject("Email lấy lại mật khẩu từ Cinema");
+            String htmlMsg = "<h3>Your code is <i style='color: green'>" + code + "</i></h3>" +
+                    "<p style='color: red; font-size: 25px;'>Cinema</p>" +
+                    "<p>Chào bạn!</p>" +
+                    "<p>Rạp chiếu phim Cinema gửi bạn mã code OTP bên dưới để đổi lại mật khẩu.</p>" +
+                    "<p>Mã CODE bao gồm 6 số: <b>" + code + "</b></p>" +
+                    "<p>Thanks and regards!</p>";
+            helper.setText(htmlMsg, true);
+
+            emailSender.send(message);
+        } catch (MessagingException e) {
+            throw new RuntimeException("Không thể gửi email OTP. Vui lòng thử lại sau!", e);
+        }
+    }
 
     @Override
     public void changePasswordByForgot(String password, Account account) {

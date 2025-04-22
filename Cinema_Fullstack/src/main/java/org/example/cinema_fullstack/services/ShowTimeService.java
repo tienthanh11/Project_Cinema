@@ -19,9 +19,11 @@ public interface ShowTimeService {
 
     List<CinemaRoom> findAllCinemaRoom();
 
+    CinemaRoom findById(long id);
+
     Long getMaxByIdShowtime();
 
-    Showtime getShowtimeById(long id);
+    Showtime findShowtimeById(long id);
 
     List<BookTicketShowtimeDto> getAllFilmShowingThisWeek();
 

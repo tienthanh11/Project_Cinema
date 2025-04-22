@@ -50,12 +50,17 @@ public class ShowTimeServiceImpl implements ShowTimeService {
     }
 
     @Override
+    public CinemaRoom findById(long id) {
+        return cinemaRoomRepository.findById(id).orElse(null);
+    }
+
+    @Override
     public Long getMaxByIdShowtime() {
         return showTimeRepository.getMaxIdShowtime();
     }
 
     @Override
-    public Showtime getShowtimeById(long id) {
+    public Showtime findShowtimeById(long id) {
         return showTimeRepository.findById(id).orElse(null);
     }
 

@@ -21,7 +21,7 @@ public class Account {
     @Type(type = "org.hibernate.type.NumericBooleanType")
     private boolean isEnable;
     @JsonBackReference
-    @OneToMany(mappedBy = "account")
+    @OneToMany(mappedBy = "account", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<AccountRole> accountRoleList;
 
     public Account(long id, String username, String password, boolean isEnable, List<AccountRole> accountRoleList) {

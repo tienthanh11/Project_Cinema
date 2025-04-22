@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Cinema - Admin</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+          rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <link rel="stylesheet" href="/template/layout/admin.css">
+</head>
+<body class="mat-typography">
+<div class="wrapper">
+    <!-- Navbar -->
+    <div th:replace="~{admin/admin-shared/admin-navbar.html}"></div>
+
+    <!-- Main Content Layout -->
+    <div class="main-content">
+        <!-- Sidebar -->
+        <div th:replace="~{admin/admin-shared/admin-sidebar.html}"></div>
+
+        <div class="content-wrapper">
+            <div class="content-header">
+                <div class="container-fluid">
+                    <div class="row mb-2">
+                        <div class="col-sm-6">
+                            <h1 class="m-0">Danh sách vé</h1>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <section class="content" id="main-container">
+                <div class="container-fluid">
+                    <div class="card shadow">
+                        <div class="col-12 card-header d-flex justify-content-between">
+                            <div class="col-8 mt-auto mb-auto"></div>
+                            <div class="col-4 input-group mt-auto mb-auto">
+                                <form th:action="@{/admin/member-ticket}" method="get" class="w-100 d-flex">
+                                    <input type="search" class="form-control" name="phone" placeholder="Nhập mã vé"
+                                           th:value="${phone != null ? phone : ''}"/>
+                                    <div class="input-group-append">
+                                        <button type="submit" class="btn btn-default">
+                                            <i class="fa fa-search"></i>
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="card-body" th:with="page=${currentPage != null ? currentPage : 0}">
+                            <div class="table-responsive"
+                                 th:if="${ticketPage != null and ticketPage.content.size() > 0}">
+                                <table class="table table-striped" id="dataTable" width="100%" cellspacing="0">
+                                    <thead>
+                                    <tr>
+                                        <th>Mã hóa đơn</th>
+                                        <th>Tên thành viên</th>
+                                        <th>CMND</th>
+                                        <th>Số điện thoại</th>
+                                        <th>Phim</th>
+                                        <th>Rạp</th>
+                                        <th>Suất chiếu</th>
+                                        <th>In vé</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr th:each="ticket : ${ticketPage.content}">
+                                        <td th:text="${ticket.code}"></td>
+                                        <td th:text="${ticket.memberName}"></td>
+                                        <td th:text="${ticket.memberCard}"></td>
+                                        <td th:text="${ticket.memberPhone}"></td>
+                                        <td th:text="${ticket.filmName}"></td>
+                                        <td th:text="${ticket.cinemaRoom}"></td>
+                                        <td th:text="${#temporals.format(ticket.day, 'dd/MM/yyyy')} + ' ' + ${ticket.time}"></td>
+                                        <td th:if="${ticket.printed == 1}" class="pl-4" style="cursor: pointer;">
+                                            <a th:href="@{/admin/member-ticket/download(invoiceId=${ticket.invoiceId})}">
+                                                <i class="fas fa-download"></i>
+                                            </a>
+                                        </td>
+                                        <td th:unless="${ticket.printed == 1}">
+                                            <button class="btn btn-primary print-ticket-btn"
+                                                    data-bs-toggle="modal"
+                                                    data-bs-target="#ticketModal"
+                                                    th:attr="data-invoice-id=${ticket.invoiceId}, data-member-name=${ticket.memberName}, data-film-name=${ticket.filmName}">
+                                                In vé
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <!-- Modal duy nhất -->
+                            <div class="modal fade" id="ticketModal" tabindex="-1" role="dialog"
+                                 aria-labelledby="ticketModalLabel" aria-hidden="true">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h2 class="modal-title" id="ticketModalLabel">In vé</h2>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                    aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            Xác nhận in vé cho khách hàng
+                                            <span style="color: red;" id="modal-member-name"></span>
+                                            với bộ phim
+                                            <span style="color: red;" id="modal-film-name"></span>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <form id="print-ticket-form" th:action="@{/admin/member-ticket/print}"
+                                                  method="post">
+                                                <input type="hidden" name="invoiceId" id="modal-invoice-id"/>
+                                                <input type="hidden" name="page" th:value="${page}"/>
+                                                <input type="hidden" name="phone"
+                                                       th:value="${phone != null ? phone : ''}"/>
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                                    Đóng
+                                                </button>
+                                                <button type="submit" class="btn btn-primary">In vé</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Phân trang -->
+                            <div class="d-flex flex-row justify-content-center"
+                                 th:if="${ticketPage != null and ticketPage.totalPages > 1}">
+                                <nav aria-label="Page navigation example">
+                                    <ul class="pagination justify-content-center">
+                                        <li class="page-item">
+                                            <a class="page-link"
+                                               th:href="@{/admin/member-ticket(page=0,phone=${phone != null ? phone : ''})}">Đầu</a>
+                                        </li>
+                                        <li class="page-item" th:class="${page <= 0} ? 'disabled' : ''">
+                                            <a class="page-link"
+                                               th:href="@{/admin/member-ticket(page=${page > 0 ? page - 1 : 0},phone=${phone != null ? phone : ''})}">
+                                                <i class="fas fa-chevron-left"></i>
+                                            </a>
+                                        </li>
+                                        <li class="page-item" th:if="${page - 1 >= 0}">
+                                            <a class="page-link"
+                                               th:href="@{/admin/member-ticket(page=${page - 1},phone=${phone != null ? phone : ''})}"
+                                               th:text="${page}"></a>
+                                        </li>
+                                        <li class="page-item active">
+                                            <a class="page-link"
+                                               th:href="@{/admin/member-ticket(page=${page},phone=${phone != null ? phone : ''})}"
+                                               th:text="${page + 1}"></a>
+                                        </li>
+                                        <li class="page-item" th:if="${page + 1 < ticketPage.totalPages}">
+                                            <a class="page-link"
+                                               th:href="@{/admin/member-ticket(page=${page + 1},phone=${phone != null ? phone : ''})}"
+                                               th:text="${page + 2}"></a>
+                                        </li>
+                                        <li class="page-item"
+                                            th:class="${page + 1 >= ticketPage.totalPages} ? 'disabled' : ''">
+                                            <a class="page-link"
+                                               th:href="@{/admin/member-ticket(page=${page + 1 < ticketPage.totalPages ? page + 1 : page},phone=${phone != null ? phone : ''})}">
+                                                <i class="fas fa-chevron-right"></i>
+                                            </a>
+                                        </li>
+                                        <li class="page-item">
+                                            <a class="page-link"
+                                               th:href="@{/admin/member-ticket(page=${ticketPage.totalPages - 1},phone=${phone != null ? phone : ''})}"
+                                               th:text="'Cuối'"></a>
+                                        </li>
+                                    </ul>
+                                </nav>
+                            </div>
+                            <div th:unless="${ticketPage != null and ticketPage.content.size() > 0}">
+                                <p class="mt-3 text-center text-dark">Không có dữ liệu</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <div th:replace="~{admin/admin-shared/admin-footer.html}"></div>
+
+    <!-- Control Sidebar -->
+    <aside class="control-sidebar control-sidebar-dark"></aside>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
+        crossorigin="anonymous"></script>
+<script src="/template/bootstrap/jquery-3.6.0.min.js"></script>
+<script src="/template/sidebar.js"></script>
+<script>
+    $(document).ready(function () {
+        $('.print-ticket-btn').on('click', function () {
+            const invoiceId = $(this).data('invoice-id');
+            const memberName = $(this).data('member-name');
+            const filmName = $(this).data('film-name');
+
+            $('#modal-invoice-id').val(invoiceId);
+            $('#modal-member-name').text(memberName);
+            $('#modal-film-name').text(filmName);
+
+            $('#ticketModal').modal('show');
+        });
+
+        $('#print-ticket-form').on('submit', function (e) {
+            const $form = $(this);
+            if ($form.data('submitted')) {
+                e.preventDefault();
+                return;
+            }
+            $form.data('submitted', true);
+            $('#ticketModal').modal('hide');
+        });
+    });
+</script>
+</body>
+</html>
+
+

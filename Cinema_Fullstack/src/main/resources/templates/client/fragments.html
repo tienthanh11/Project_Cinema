@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Cinema</title>
+</head>
+<body>
+<th:block th:fragment="districtList">
+    <option value="">Chọn...</option>
+    <option th:each="district : ${districts}" th:value="${district.id}" th:text="${district.name}"></option>
+</th:block>
+
+<th:block th:fragment="wardList">
+    <option value="">Chọn...</option>
+    <option th:each="ward : ${wards}" th:value="${ward.id}" th:text="${ward.name}"></option>
+</th:block>
+</body>
+</html>

@@ -9,93 +9,189 @@ body {
     background: linear-gradient(to right, #0a346d, #1598ef);
 }
 
-.form-sigin {
-    font-size: 16px;
-}
-
+/* Card container */
 .card-signin {
-    border: 0;
-    border-radius: 0rem;
-    box-shadow: 0 0.5rem 1rem 0 rgba(0, 0, 0, 0.1)
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.15);
+    background-color: #fff;
+    overflow: hidden;
 }
 
-.card-signin .card-title {
-    margin-bottom: 2rem;
-    font-weight: 300;
-    font-size: 1.5rem
+.card-body {
+    padding: 2.5rem;
 }
 
-.card-signin .card-body {
-    padding: 2rem
+/* Gradient text for title */
+.gradient-text {
+    font-size: 28px;
+    font-weight: 700;
+    background: linear-gradient(135deg, #02a388, #018068);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
 }
 
+/* Form styles */
 .form-signin {
-    width: 100%
-}
-
-.form-signin .btn {
-    font-size: 80%;
-    border-radius: 0rem;
-    letter-spacing: .1rem;
-    font-weight: bold;
-    padding: 1rem;
-    transition: all 0.2s
+    width: 100%;
 }
 
 .form-label-group {
-    position: relative;
-    margin-bottom: 1rem
+    margin-bottom: 1.5rem;
 }
 
-.form-label-group input {
-    height: 50px
-}
-
-.form-label-group > label {
-    position: absolute;
-    top: 0;
-    left: 0;
-    display: block;
-    width: 100%;
-    margin-bottom: 0;
-    line-height: 1.5;
-    color: #495057;
-    border: 1px solid transparent;
-    border-radius: .25rem;
-    transition: all .1s ease-in-out
+.form-control {
+    border: 1px solid #ced4da;
+    border-radius: 8px;
+    padding: 12px;
+    font-size: 16px;
+    height: 50px;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
 }
 
 .form-control:focus {
-    box-shadow: 10px 0px 0px 0px #ffffff !important
+    border-color: #02a388;
+    box-shadow: 0 0 8px rgba(2, 163, 136, 0.3);
+    outline: none;
 }
 
-.btn-google {
-    color: white;
-    background-color: #ea4335
+.form-control::placeholder {
+    color: #adb5bd;
 }
 
-.btn-facebook {
-    color: white;
-    background-color: #3b5998
+/* Shake effect for error */
+.form-control.shake {
+    animation: shake 0.5s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
 }
 
-.btn-google:hover {
-    color: white;
-    background-color: #c2190a
+@keyframes shake {
+    10%, 90% {
+        transform: translateX(-1px);
+    }
+    20%, 80% {
+        transform: translateX(2px);
+    }
+    30%, 50%, 70% {
+        transform: translateX(-4px);
+    }
+    40%, 60% {
+        transform: translateX(4px);
+    }
 }
 
-.btn-facebook:hover {
-    color: white;
-    background-color: #022c85
+/* Labels */
+.form-label {
+    font-size: 14px;
+    font-weight: 600;
+    color: #495057;
+    margin-bottom: 8px;
+    transition: all 0.3s ease;
 }
 
-.icon {
-    padding-top: 18px;
-    background-color: #dddddd;
-    color: black;
-    min-width: 50px;
-    text-align: center;
+.form-label.required:after {
+    content: " *";
+    color: #dc3545;
 }
 
 
+/* Buttons */
+.btn {
+    border-radius: 8px;
+    padding: 12px;
+    font-size: 16px;
+    font-weight: 500;
+    text-transform: uppercase;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
 
+.btn-success {
+    background: linear-gradient(135deg, #02a388, #018068);
+    border: none;
+    color: #fff;
+}
+
+.btn-success:hover:not(:disabled) {
+    background: linear-gradient(135deg, #02a388, #018068);
+    transform: translateY(-2px);
+}
+
+.btn-success:disabled {
+    background: #a0a0a0;
+    cursor: not-allowed;
+}
+
+
+/* Input group for password */
+.input-group-text {
+    background-color: #f8f9fa;
+    border: 1px solid #ced4da;
+    border-radius: 0 8px 8px 0;
+    cursor: pointer;
+    padding: 0 12px;
+}
+
+.toggle-password i {
+    color: #495057;
+    font-size: 16px;
+}
+
+/* Checkbox */
+.custom-control-label {
+    font-size: 14px;
+    color: #495057;
+}
+
+.custom-control-input:checked ~ .custom-control-label::before {
+    background-color: #02a388;
+    border-color: #02a388;
+}
+
+/* Error messages */
+.form-text.text-danger {
+    font-size: 12px;
+    margin-top: 5px;
+}
+
+/* Toast notification */
+.toast {
+    z-index: 1050;
+}
+
+/* Tooltip */
+.tooltip-inner {
+    background-color: #02a388;
+    color: #fff;
+}
+
+.tooltip .tooltip-arrow::before {
+    border-top-color: #02a388;
+}
+
+/* Loading spinner */
+.spinner-border {
+    width: 1.25rem;
+    height: 1.25rem;
+    vertical-align: middle;
+    margin-left: 8px;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .card-signin {
+        margin: 0 15px;
+    }
+
+    .card-body {
+        padding: 1.5rem;
+    }
+
+    .btn {
+        width: 100%;
+        margin-bottom: 10px;
+    }
+
+    .form-label-group {
+        margin-bottom: 1rem;
+    }
+}

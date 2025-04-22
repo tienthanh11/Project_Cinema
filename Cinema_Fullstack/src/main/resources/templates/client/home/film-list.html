@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Cinema</title>
+    <base href="/">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <link rel="stylesheet" href="/template/bootstrap/css/bootstrap.css">
+    <link rel="stylesheet" href="/template/css/content.css">
+    <link rel="stylesheet" href="/template/style.css">
+    <link rel="stylesheet" href="/template/layout/film-list.css">
+</head>
+<body class="mat-typography">
+<div class="container-fluid">
+
+    <div th:replace="~{client/client-shared/layout/header.html}"></div>
+
+    <div class="main-list-film">
+        <div class="nav-herder d-flex justify-content-center flex-wrap" id="idFilm">
+            <span th:style="'background:' + (isShowing ? '#02a388' : '#0c0d0d')">
+                <a th:href="@{/film-list/?isShowing=true}" th:text="'Phim Đang Chiếu'">Phim Đang Chiếu</a>
+            </span>
+            <span th:style="'background:' + (!isShowing ? '#02a388' : '#0c0d0d')">
+                <a th:href="@{/film-list/?isShowing=false}" th:text="'Phim Sắp Chiếu'">Phim Sắp Chiếu</a>
+            </span>
+        </div>>
+        <div id="wrap">
+            <div class="search-container">
+                <input id="search" name="search" type="text" placeholder="Tìm kiếm phim..." th:value="${nameSearch}"
+                       onkeyup="debouncedSearchFilm()">
+                <span class="material-icons material-icons-outlined search_submit">search</span>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="row justify-content-center">
+                <div th:each="film : ${listFilmData}"
+                     class="col-md-4 col-lg-3 col-sm-6 d-flex justify-content-center mb-4">
+                    <div class="card">
+                        <img class="card-img-top card-image" th:src="@{${film.imageUrl}}" alt="...">
+                        <div class="hover-overlay"></div>
+                        <div class="button-overlay d-flex flex-row">
+                            <a class="btn-sm mr-3" th:href="@{/book/film-selection(filmId=${film.id})}">Đặt vé</a>
+                            <a class="btn-sm" th:href="@{/detail/{id}(id=${film.id})}">Chi tiết</a>
+                        </div>
+                        <div class="card-body pt-2">
+                            <div class="card-title info-header">
+                                <a th:href="@{/detail/{id}(id=${film.id})}"><h3 th:text="${film.name}"></h3></a>
+                            </div>
+                            <div class="card-text info-detail">
+                                <ul>
+                                    <li class="li-category mb-1">
+                                        <span>Thể loại:</span>
+                                        <span th:text="${film.category}"></span>
+                                    </li>
+                                    <li><span>Thời Lượng:</span> <span th:text="${film.duration}"> </span> phút</li>
+                                    <li>
+                                        <span>Ngày khởi chiếu:</span>
+                                        <span th:text="${#temporals.format(film.start_date, 'dd/MM/yyyy')}"></span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="rated position-absolute">
+                            <img th:src="@{${film.age}}" alt="Cam do tuoi">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div th:replace="~{client/client-shared/layout/footer.html}"></div>
+</div>
+
+<script src="/template/bootstrap/jquery-3.6.0.min.js"></script>
+<script src="/template/bootstrap/js/bootstrap.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
+        crossorigin="anonymous"></script>
+
+<script>
+    const isShowing = [[${isShowing}]] || false;
+
+    function debounce(func, wait) {
+        let timeout;
+        return function executedFunction(...args) {
+            const later = () => {
+                clearTimeout(timeout);
+                func(...args);
+            };
+            clearTimeout(timeout);
+            timeout = setTimeout(later, wait);
+        };
+    }
+    function searchFilm() {
+        const nameSearch = document.getElementById("search").value;
+
+        fetch('/film-list?nameSearch=' + encodeURIComponent(nameSearch) + '&isShowing=' + isShowing)
+            .then(response => response.text())
+            .then(html => {
+                document.body.innerHTML = html;
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+    }
+
+    const debouncedSearchFilm = debounce(searchFilm, 300);
+</script>
+</body>
+</html>

@@ -46,6 +46,9 @@
                             <a class="nav-link nav-link-custom" th:href="@{/}">Trang chủ</a>
                         </li>
                         <li class="nav-item">
+                            <a class="nav-link nav-link-custom" th:href="@{/film-list}">Phim</a>
+                        </li>
+                        <li class="nav-item">
                             <a class="nav-link nav-link-custom" th:href="@{/book/film-selection}">Đặt vé</a>
                         </li>
                         <li class="nav-item">
@@ -69,7 +72,7 @@
             <div>
                 <div th:unless="${username != null}">
                     <a th:href="@{/login}" class="login-button">Đăng nhập</a>
-                    <a th:href="@{/member/register}" class="login-button ml-2">Đăng ký</a>
+                    <a th:href="@{/register}" class="login-button ml-2">Đăng ký</a>
                 </div>
                 <div th:if="${username != null}" class="username-text">
                     Chào, <span th:text="${username}"></span>
@@ -135,19 +138,15 @@
                 <span th:style="'background:' + (!isShowing ? '#02a388' : '#0c0d0d')">
                 <a th:href="@{/?isShowing=false}" th:text="'Phim Sắp Chiếu'">Phim Sắp Chiếu</a>
             </span>
-            </div>
-            <!--  Header list-film-->
-            <!--    Button search-->
+            </div>>
             <div id="wrap">
-                <div>
-                    <!-- Ô nhập tìm kiếm, sử dụng th:value để giữ giá trị khi trang được tải lại -->
-                    <input id="search" name="search" type="text" placeholder="Nhập để tìm kiếm" th:value="${nameSearch}"
-                           th:onkeyup="searchFilm()">
+                <div class="search-container">
+                    <input id="search" name="search" type="text" placeholder="Tìm kiếm phim..." th:value="${nameSearch}"
+                           onkeyup="debouncedSearchFilm()">
                     <span class="material-icons material-icons-outlined search_submit">search</span>
                 </div>
             </div>
-            <!--    Button search-->
-            <!--    List-film-->
+
             <div class="container">
                 <div class="row justify-content-center">
                     <div th:each="film : ${listFilmData}"
@@ -217,10 +216,23 @@
 </div>
 
 <script>
-    function searchFilm() {
-        var nameSearch = document.getElementById("search").value;
+    const isShowing = [[${isShowing}]] || false;
 
-        fetch('/?nameSearch=' + nameSearch + '&isShowing=true')
+    function debounce(func, wait) {
+        let timeout;
+        return function executedFunction(...args) {
+            const later = () => {
+                clearTimeout(timeout);
+                func(...args);
+            };
+            clearTimeout(timeout);
+            timeout = setTimeout(later, wait);
+        };
+    }
+    function searchFilm() {
+        const nameSearch = document.getElementById("search").value;
+
+        fetch('/?nameSearch=' + encodeURIComponent(nameSearch) + '&isShowing=' + isShowing)
             .then(response => response.text())
             .then(html => {
                 document.body.innerHTML = html;
@@ -229,6 +241,8 @@
                 console.error('Error:', error);
             });
     }
+
+    const debouncedSearchFilm = debounce(searchFilm, 300);
 </script>
 
 <script src="/template/bootstrap/jquery-3.6.0.min.js"></script>

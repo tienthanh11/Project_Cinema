@@ -71,6 +71,7 @@ public class MemberShipController {
         model.addAttribute("provinces", provinceService.findAll());
         model.addAttribute("districts", districtService.findAllByProvinceId(membership.getWard().getDistrict().getProvince().getId()));
         model.addAttribute("wards", wardService.findAllByDistrictId(membership.getWard().getDistrict().getId()));
+        model.addAttribute("genders", List.of("Nam", "Nữ", "Khác"));
         model.addAttribute("defaultImage", "/uploads/default.jpg");
 
         authService.addAuthAttributes(model, authentication);
@@ -107,6 +108,7 @@ public class MemberShipController {
         model.addAttribute("provinces", provinces);
         model.addAttribute("districts", districts);
         model.addAttribute("wards", wards);
+        model.addAttribute("genders", List.of("Nam", "Nữ", "Khác"));
         model.addAttribute("defaultImage", "/uploads/default.jpg");
 
         if (bindingResult.hasErrors()) {

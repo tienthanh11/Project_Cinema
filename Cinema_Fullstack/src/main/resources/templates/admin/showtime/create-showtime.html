@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Cinema - Admin</title>
+    <base href="/">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <link rel="stylesheet" href="/template/layout/admin.css">
+    <link rel="stylesheet" href="/template/layout/create-showtime.css">
+</head>
+<body class="mat-typography">
+<div class="wrapper">
+    <!-- Navbar -->
+    <div th:replace="~{admin/admin-shared/admin-navbar.html}"></div>
+
+    <!-- Main Content Layout -->
+    <div class="main-content">
+        <!-- Sidebar -->
+        <div th:replace="~{admin/admin-shared/admin-sidebar.html}"></div>
+
+        <!-- Content Wrapper -->
+        <div class="content-wrapper">
+            <div class="content-header">
+                <div class="container-fluid">
+                    <div class="row mb-2">
+                        <div class="col-sm-6">
+                            <h1 class="m-0 font-weight-bold">Tạo suất chiếu</h1>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main content -->
+            <section class="content">
+                <div class="container-fluid">
+                    <div class="card shadow mb-4">
+                        <div class="card-body">
+                            <form th:action="@{/admin/showtime/create}" th:object="${showtimeData}" method="post">
+                                <!-- Success/Error Messages -->
+                                <div th:if="${successMessage}" class="alert alert-success">
+                                    <span th:text="${successMessage}"></span>
+                                </div>
+                                <div th:if="${errorMessage}" class="alert alert-danger">
+                                    <span th:text="${errorMessage}"></span>
+                                </div>
+
+                                <!-- Film Selection -->
+                                <div class="form-group">
+                                    <label class="required">Phim</label>
+                                    <select class="form-control" id="filmId" name="showtimeList[0].filmId">
+                                        <option value="" selected disabled>-Chọn-</option>
+                                        <option th:each="film : ${films}" th:value="${film.id}"
+                                                th:text="${film.name}"></option>
+                                    </select>
+                                </div>
+
+                                <!-- Day Selection -->
+                                <div class="form-group">
+                                    <label class="required">Ngày</label>
+                                    <input type="date" class="form-control" name="showtimeList[0].day"
+                                           th:value="${showtimeData.showtimeList[0].day != null} ? ${#temporals.format(showtimeData.showtimeList[0].day, 'yyyy-MM-dd')}"/>
+                                </div>
+
+                                <!-- Cinema Room Selection -->
+                                <div class="form-group">
+                                    <label class="required">Tên Phòng</label>
+                                    <select class="form-control" id="cinemaRoomId" name="showtimeList[0].cinemaRoomId">
+                                        <option value="" selected disabled>-Chọn-</option>
+                                        <option th:each="room : ${cinemaRooms}" th:value="${room.id}"
+                                                th:text="${room.name}"></option>
+                                    </select>
+                                </div>
+
+                                <!-- Film Technology Selection -->
+                                <div class="form-group">
+                                    <label class="required">Công nghệ</label>
+                                    <select class="form-control" id="filmTechnology"
+                                            name="showtimeList[0].filmTechnology">
+                                        <option value="" selected disabled>-Chọn-</option>
+                                        <option th:each="tech : ${technologies}" th:value="${tech}"
+                                                th:text="${tech}"></option>
+                                    </select>
+                                </div>
+
+                                <!-- Subtitle Selection -->
+                                <div class="form-group">
+                                    <label class="required">Ngôn ngữ</label>
+                                    <select class="form-control" id="subTitle" name="showtimeList[0].subTitle">
+                                        <option value="" selected disabled>-Chọn-</option>
+                                        <option th:each="sub : ${subTitles}" th:value="${sub}"
+                                                th:text="${sub}"></option>
+                                    </select>
+                                </div>
+
+                                <!-- Time Selection -->
+                                <div class="form-group">
+                                    <label class="required">Giờ chiếu</label>
+                                    <ul class="ks-cboxtags">
+                                        <li th:each="time : ${timeSlots}">
+                                            <input type="checkbox" th:id="${time}" name="selectedTimes"
+                                                   th:value="${time}"
+                                                   th:checked="${showtimeData.selectedTimes != null and showtimeData.selectedTimes.contains(time)}"/>
+                                            <label th:for="${time}">
+                                                <svg class="icon-clock" xmlns="http://www.w3.org/2000/svg"
+                                                     viewBox="0 0 24 24">
+                                                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 6h4v2h-4z"/>
+                                                </svg>
+                                                <svg class="icon-check" xmlns="http://www.w3.org/2000/svg"
+                                                     viewBox="0 0 24 24">
+                                                    <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+                                                </svg>
+                                                <span th:text="${time.substring(0, 5)}"></span>
+                                            </label>
+                                        </li>
+                                    </ul>
+                                </div>
+
+                                <!-- Buttons -->
+                                <div class="seat-layout">
+                                    <a th:href="@{/admin/film}" class="btn btn-primary">
+                                        <i class="fas fa-arrow-left"></i> Quay lại
+                                    </a>
+                                    <button type="submit" class="btn btn-success">
+                                        <i class="fas fa-plus"></i> Tạo mới
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <div th:replace="~{admin/admin-shared/admin-footer.html}"></div>
+
+    <!-- Control Sidebar -->
+    <aside class="control-sidebar control-sidebar-dark">
+        <!-- Control sidebar content goes here -->
+    </aside>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
+        crossorigin="anonymous"></script>
+<script src="/template/bootstrap/jquery-3.6.0.min.js"></script>
+<script src="/template/bootstrap/js/bootstrap.js"></script>
+<script src="/template/sidebar.js"></script>
+</body>
+</html>

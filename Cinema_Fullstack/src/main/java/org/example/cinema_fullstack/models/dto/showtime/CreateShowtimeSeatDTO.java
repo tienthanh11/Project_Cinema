@@ -4,7 +4,6 @@ import lombok.Data;
 
 @Data
 public class CreateShowtimeSeatDTO {
-    String name;
-    String code;
-
+    private String name;
+    private String code;
 }

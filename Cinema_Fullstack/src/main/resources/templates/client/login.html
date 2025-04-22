@@ -6,50 +6,99 @@
     <base href="/">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="icon" type="image/x-icon" href="favicon.ico">
-    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <link rel="stylesheet" href="/template/layout/login.css">
-    <link rel="stylesheet" href="/template/css/content.css">
-    <link rel="stylesheet" href="/template/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
-    <link rel="stylesheet" href="/template/bootstrap/css/bootstrap.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+          integrity="sha512-1ycn6IcaQQ40/MKBW2W4Rhis/DbILU74C1vSrLJxCq57o941Ym01SwNsOMqvEBFlcgUa6xLiPY/NS5R+E6ztJQ=="
+          crossorigin="anonymous" referrerpolicy="no-referrer"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css"
+          integrity="sha512-vKMx8UnXk60zUwyUnUPM3HbQo8QfmNx7+ltw8Pm5zLusl1XIfwcxo8DbWCqMGkaTTM+VpC+wTenb6THIs10w=="
+          crossorigin="anonymous" referrerpolicy="no-referrer"/>
+    <link rel="stylesheet" href="/template/layout/login.css">
 </head>
 <body class="mat-typography">
 <div class="container-fluid">
     <div th:replace="~{client/client-shared/layout/header.html}"></div>
-
-    <div class="content-inner row form-sigin">
-        <div class="col-sm-9 col-md-7 col-lg-5 mx-auto">
+    <div class="content-inner row d-flex justify-content-center mt-5 mb-5">
+        <div class="col-sm-10 col-md-6 col-lg-5 mx-auto">
             <div class="card card-signin my-5">
-                <div class="card-body ">
-                    <div class="d-flex flex-row justify-content-center">
-                        <h3 class="card-title text-center font-weight-bold">Đăng nhập</h3>
+                <div class="card-body p-4">
+                    <h3 class="card-title text-center font-weight-bold mb-4 gradient-text">Đăng Nhập</h3>
+                    <!-- Error Toast -->
+                    <div id="errorToast"
+                         class="toast align-items-center text-white bg-danger border-0 position-fixed top-0 end-0 m-3"
+                         role="alert" aria-live="assertive" aria-atomic="true" data-bs-autohide="true"
+                         data-bs-delay="3000">
+                        <div class="d-flex">
+                            <div class="toast-body">
+                                Tên đăng nhập hoặc mật khẩu không đúng!
+                            </div>
+                            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"
+                                    aria-label="Close"></button>
+                        </div>
                     </div>
-                    <form class="form-signin form-group" th:action="@{/doLogin}" method="post">
-                        <div class="form-label-group">
-                            <input type="text" id="inputUsername" class="form-control mx-0" placeholder="Tên đăng nhập"
+                    <!-- Success Toast -->
+                    <div id="successToast"
+                         class="toast align-items-center text-white bg-success border-0 position-fixed top-0 end-0 m-3"
+                         role="alert" aria-live="assertive" aria-atomic="true" data-bs-autohide="true"
+                         data-bs-delay="3000">
+                        <div class="d-flex">
+                            <div class="toast-body">
+                                Đăng ký tài khoản thành công!
+                            </div>
+                            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"
+                                    aria-label="Close"></button>
+                        </div>
+                    </div>
+
+                    <!-- Change Password Success Toast -->
+                    <div id="changePasswordSuccessToast"
+                         class="toast align-items-center text-white bg-success border-0 position-fixed top-0 end-0 m-3"
+                         role="alert" aria-live="assertive" aria-atomic="true" data-bs-autohide="true"
+                         data-bs-delay="3000">
+                        <div class="d-flex">
+                            <div class="toast-body">
+                                Đổi mật khẩu thành công!
+                            </div>
+                            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"
+                                    aria-label="Close"></button>
+                        </div>
+                    </div>
+                    <form id="loginForm" class="form-signin form-group" th:action="@{/doLogin}" method="post">
+                        <div class="form-label-group mb-3">
+                            <label for="inputUsername" class="form-label required" data-bs-toggle="tooltip"
+                                   data-bs-placement="top" title="Nhập tên đăng nhập của bạn">Tên đăng nhập</label>
+                            <input type="text" id="inputUsername" class="form-control" placeholder="Nhập tên đăng nhập"
                                    name="username" required>
                         </div>
-                        <div class="form-label-group">
-                            <input type="password" id="inputPassword" class="form-control" placeholder="Mật khẩu"
-                                   name="password" required>
+                        <div class="form-label-group mb-3">
+                            <label for="inputPassword" class="form-label required" data-bs-toggle="tooltip"
+                                   data-bs-placement="top" title="Nhập mật khẩu của bạn">Mật khẩu</label>
+                            <div class="input-group">
+                                <input type="password" id="inputPassword" class="form-control"
+                                       placeholder="Nhập mật khẩu" name="password" required>
+                                <span class="input-group-text toggle-password"
+                                      onclick="togglePassword('inputPassword')"><i class="fas fa-eye"></i></span>
+                            </div>
                         </div>
-                        <small class="form-text text-danger" th:if="${param.error != null}">
-                            Tên đăng nhập hoặc mật khẩu không đúng!
-                        </small>
-                        <div class="custom-control custom-checkbox mb-3 flex-row d-flex justify-content-between">
-                            <input type="checkbox" class="custom-control-input" id="customCheck1" name="remember-me">
-                            <label class="custom-control-label" for="customCheck1">Ghi nhớ tài khoản?</label>
-                            <a th:href="@{/member/forgot}">Quên mật khẩu?</a>
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <div class="custom-control custom-checkbox">
+                                <input type="checkbox" class="custom-control-input" id="customCheck1"
+                                       name="remember-me">
+                                <label class="custom-control-label" for="customCheck1">Ghi nhớ tài khoản</label>
+                            </div>
+                            <a th:href="@{/forgot-password}" class="text-decoration-none">Quên mật khẩu?</a>
                         </div>
-                        <button class="btn btn-lg btn-primary btn-block text-uppercase" type="submit">Đăng nhập</button>
-                        <hr class="my-4">
-                        <div class="btn btn-lg btn-google btn-block text-uppercase">
-                            <span class="fab fa-google mr-2"></span> Đăng nhập với Google
-                        </div>
-                        <div class="btn btn-lg btn-facebook btn-block text-uppercase">
-                            <span class="fab fa-facebook-square mr-2"></span> Đăng nhập với Facebook
+                        <button class="btn btn-success btn-block text-uppercase gradient-btn" type="submit"
+                                id="submitButton">
+                            <span class="button-text">Đăng Nhập</span>
+                            <span class="spinner-border spinner-border-sm d-none" role="status"
+                                  aria-hidden="true"></span>
+                        </button>
+                        <div class="text-center mt-3">
+                            <p>Bạn chưa có tài khoản? <a th:href="@{/register}" class="text-decoration-none">
+                                Đăng ký ngay</a></p>
                         </div>
                     </form>
                 </div>
@@ -63,7 +112,69 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
         crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"
+        integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="Zhttps://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"
+        integrity="sha512-VEd+nq25CkR676O+pLBnDW09R7VQX9Mdiij052gVCp5yVH3jGtH70Ho/UUv4mJDsEdTvqRCFZg0NKGiojGnIQ=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script src="/template/bootstrap/jquery-3.6.0.min.js"></script>
 <script src="/template/bootstrap/js/bootstrap.js"></script>
+
+<script>
+    // Initialize tooltips
+    const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+    const tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl);
+    });
+
+    // Toggle password visibility
+    function togglePassword(fieldId) {
+        const field = document.getElementById(fieldId);
+        const icon = field.nextElementSibling.querySelector('i');
+        if (field.type === "password") {
+            field.type = "text";
+            icon.classList.remove("fa-eye");
+            icon.classList.add("fa-eye-slash");
+        } else {
+            field.type = "password";
+            icon.classList.remove("fa-eye-slash");
+            icon.classList.add("fa-eye");
+        }
+    }
+
+    // Show loading spinner on form submit
+    document.getElementById('loginForm').addEventListener('submit', function () {
+        const submitButton = document.getElementById('submitButton');
+        const spinner = submitButton.querySelector('.spinner-border');
+        const buttonText = submitButton.querySelector('.button-text');
+        submitButton.disabled = true;
+        spinner.classList.remove('d-none');
+        buttonText.textContent = 'Đang xử lý...';
+    });
+
+    // Shake effect and show toasts on load
+    document.addEventListener('DOMContentLoaded', function () {
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.has('error')) {
+            const inputs = document.querySelectorAll('.form-control');
+            inputs.forEach(input => {
+                input.classList.add('shake');
+                setTimeout(() => input.classList.remove('shake'), 500);
+            });
+            const errorToast = new bootstrap.Toast(document.getElementById('errorToast'));
+            errorToast.show();
+        }
+        if (urlParams.has('registerSuccess')) {
+            const successToast = new bootstrap.Toast(document.getElementById('successToast'));
+            successToast.show();
+        }
+
+        if (urlParams.has('success')) {
+            const changePasswordSuccessToast = new bootstrap.Toast(document.getElementById('changePasswordSuccessToast'));
+            changePasswordSuccessToast.show();
+        }
+    });
+</script>
 </body>
 </html>

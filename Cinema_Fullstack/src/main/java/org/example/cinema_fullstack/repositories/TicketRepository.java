@@ -51,38 +51,59 @@ public interface TicketRepository extends JpaRepository<Ticket, Long> {
             "GROUP BY invoice.id, ticket.id", nativeQuery = true)
     Page<TicketDTO> findTicketByMembership(Pageable pageable, Long id);
 
-    @Query(value = "select invoice.id as invoiceId,membership.member_code as memberCode,invoice.code as code,membership.name as memberName,membership.card as memberCard,membership.phone as memberPhone, film.name as filmName,showtime.day,showtime.time,ticket.printed,cinema_room.name as cinemaRoom,group_concat(seat.name) as seatName,sum(ticket_price.price) as price from `ticket`\n" +
-            "left join invoice on ticket.invoice_id = invoice.id\n" +
-            "left join membership on membership.id = invoice.membership_id\n" +
-            "left join seat on seat.ticket_id = ticket.id\n" +
-            "left join ticket_price on seat.ticket_price_id = ticket_price.id\n" +
-            "left join showtime on seat.showtime_id = showtime.id\n" +
-            "left join cinema_room on showtime.cinema_room_id = cinema_room.id\n" +
-            "left join film on showtime.film_id = film.id\n" +
-            "group by invoice.id",nativeQuery = true)
+    @Query(value = "SELECT i.id AS invoiceId, i.code AS code, m.member_code AS memberCode, m.name AS memberName, " +
+            "m.card AS memberCard, m.phone AS memberPhone, f.name AS filmName, s.day, s.time, t.printed, " +
+            "cr.name AS cinemaRoom, agg.seatName, agg.price " +
+            "FROM invoice i " +
+            "LEFT JOIN membership m ON m.id = i.membership_id " +
+            "LEFT JOIN ticket t ON t.invoice_id = i.id " +
+            "LEFT JOIN showtime s ON s.id = (SELECT showtime_id FROM seat WHERE ticket_id = t.id LIMIT 1) " +
+            "LEFT JOIN film f ON f.id = s.film_id " +
+            "LEFT JOIN cinema_room cr ON cr.id = s.cinema_room_id " +
+            "LEFT JOIN (" +
+            "    SELECT t.invoice_id, GROUP_CONCAT(s.name) AS seatName, SUM(tp.price) AS price " +
+            "    FROM ticket t " +
+            "    LEFT JOIN seat s ON s.ticket_id = t.id " +
+            "    LEFT JOIN ticket_price tp ON s.ticket_price_id = tp.id " +
+            "    GROUP BY t.invoice_id" +
+            ") agg ON agg.invoice_id = i.id " +
+            "GROUP BY i.id, i.code, m.member_code, m.name, m.card, m.phone, f.name, s.day, s.time, t.printed, cr.name, agg.seatName, agg.price",
+            nativeQuery = true)
     Page<TicketMemberDTO> findAllTicket(Pageable pageable);
-    @Query(value = "select invoice.id as invoiceId,invoice.code as code,membership.member_code as memberCode,membership.name as memberName,membership.card as memberCard,membership.phone as memberPhone, film.name as filmName,showtime.day,showtime.time,ticket.printed,cinema_room.name as cinemaRoom,group_concat(seat.name) as seatName,sum(ticket_price.price) as price from `ticket`\n" +
-            "left join invoice on ticket.invoice_id = invoice.id\n" +
-            "left join membership on membership.id = invoice.membership_id\n" +
-            "left join seat on seat.ticket_id = ticket.id\n" +
-            "left join ticket_price on seat.ticket_price_id = ticket_price.id\n" +
-            "left join showtime on seat.showtime_id = showtime.id\n" +
-            "left join cinema_room on showtime.cinema_room_id = cinema_room.id\n" +
-            "left join film on showtime.film_id = film.id\n" +
-//            "where concat(membership.member_code,film.name,membership.phone,membership.name,'') like %?1% \n" +
-            "where invoice.code like %?1% \n" +
-            "group by invoice.id",nativeQuery = true)
-    Page<TicketMemberDTO> findAllTicketBySearch(String key,Pageable pageable);
-    @Query(value = "select invoice.id as invoiceId,invoice.code as code,membership.member_code as memberCode,membership.name as memberName,membership.card as memberCard,membership.phone as memberPhone, film.name as filmName,showtime.day,showtime.time,ticket.printed,cinema_room.name as cinemaRoom,group_concat(seat.name) as seatName,sum(ticket_price.price) as price from `ticket`\n" +
-            "            left join invoice on ticket.invoice_id = invoice.id\n" +
-            "            left join membership on membership.id = invoice.membership_id\n" +
-            "            left join seat on seat.ticket_id = ticket.id\n" +
-            "            left join ticket_price on seat.ticket_price_id = ticket_price.id\n" +
-            "            left join showtime on seat.showtime_id = showtime.id\n" +
-            "            left join cinema_room on showtime.cinema_room_id = cinema_room.id\n" +
-            "            left join film on showtime.film_id = film.id\n" +
-            "            where invoice.id = ?1 limit 1"
-             ,nativeQuery = true)
+    @Query(value = "SELECT i.id AS invoiceId, i.code AS code, m.member_code AS memberCode, m.name AS memberName, " +
+            "m.card AS memberCard, m.phone AS memberPhone, f.name AS filmName, s.day, s.time, t.printed, " +
+            "cr.name AS cinemaRoom, agg.seatName, agg.price " +
+            "FROM invoice i " +
+            "LEFT JOIN membership m ON m.id = i.membership_id " +
+            "LEFT JOIN ticket t ON t.invoice_id = i.id " +
+            "LEFT JOIN showtime s ON s.id = (SELECT showtime_id FROM seat WHERE ticket_id = t.id LIMIT 1) " +
+            "LEFT JOIN film f ON f.id = s.film_id " +
+            "LEFT JOIN cinema_room cr ON cr.id = s.cinema_room_id " +
+            "LEFT JOIN (" +
+            "    SELECT t.invoice_id, GROUP_CONCAT(s.name) AS seatName, SUM(tp.price) AS price " +
+            "    FROM ticket t " +
+            "    LEFT JOIN seat s ON s.ticket_id = t.id " +
+            "    LEFT JOIN ticket_price tp ON s.ticket_price_id = tp.id " +
+            "    GROUP BY t.invoice_id" +
+            ") agg ON agg.invoice_id = i.id " +
+            "WHERE i.code LIKE CONCAT('%', ?1, '%') " +
+            "GROUP BY i.id, i.code, m.member_code, m.name, m.card, m.phone, f.name, s.day, s.time, t.printed, cr.name, agg.seatName, agg.price",
+            nativeQuery = true)
+    Page<TicketMemberDTO> findAllTicketBySearch(String key, Pageable pageable);
+    @Query(value = "SELECT i.id AS invoiceId, i.code AS code, m.member_code AS memberCode, m.name AS memberName, " +
+            "m.card AS memberCard, m.phone AS memberPhone, f.name AS filmName, s.day, s.time, t.printed, " +
+            "cr.name AS cinemaRoom, " +
+            "(SELECT GROUP_CONCAT(s2.name) FROM seat s2 WHERE s2.ticket_id = t.id) AS seatName, " +
+            "(SELECT SUM(tp.price) FROM seat s3 LEFT JOIN ticket_price tp ON s3.ticket_price_id = tp.id WHERE s3.ticket_id = t.id) AS price " +
+            "FROM invoice i " +
+            "LEFT JOIN membership m ON m.id = i.membership_id " +
+            "LEFT JOIN ticket t ON t.invoice_id = i.id " +
+            "LEFT JOIN showtime s ON s.id = (SELECT showtime_id FROM seat WHERE ticket_id = t.id LIMIT 1) " +
+            "LEFT JOIN film f ON f.id = s.film_id " +
+            "LEFT JOIN cinema_room cr ON cr.id = s.cinema_room_id " +
+            "WHERE i.id = ?1 " +
+            "LIMIT 1",
+            nativeQuery = true)
     TicketMemberDTO findInvoiceMemberById(Long id);
     @Transactional
     @Modifying

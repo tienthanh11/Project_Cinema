@@ -7,11 +7,10 @@ import java.time.LocalTime;
 
 @Data
 public class CreateShowtimeDTO {
-    String filmTechnology;
-    String subTitle;
-    LocalDate day;
-    LocalTime time;
-    Long filmId;
-    Long cinemaRoomId;
-
+    private Long filmId;
+    private LocalDate day;
+    private Long cinemaRoomId;
+    private String filmTechnology;
+    private String subTitle;
+    private LocalTime time;
 }

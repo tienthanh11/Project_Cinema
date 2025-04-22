@@ -32,34 +32,36 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        // Tắt CSRF nếu không cần thiết (chỉ nên tắt khi sử dụng API không cần bảo vệ CSRF)
         http.csrf().disable();
-
-        // Cấu hình cho trang homepages có thể truy cập công khai
         http.authorizeRequests()
-                .antMatchers("/**", "/login", "/book/**", "/paypal/**").permitAll()  // Cho phép trang homepages và login truy cập công khai
+                .antMatchers(
+                        "/register",
+                        "/districts",
+                        "/wards",
+                        "/**",
+                        "/login",
+                        "/book/**",
+                        "/paypal/**").permitAll()
                 .antMatchers("/member/**", "/book/member/**").access("hasAnyRole('ROLE_MEMBER', 'ROLE_ADMIN')");
         http.authorizeRequests().antMatchers("/admin/**").hasRole("ADMIN");
         http.authorizeRequests().and().exceptionHandling().accessDeniedPage("/deny");
 
-        // Cấu hình đăng nhập
         http.formLogin()
-                .loginPage("/login") // trang đăng nhập
-                .loginProcessingUrl("/doLogin") // URL xử lý đăng nhập
-                .defaultSuccessUrl("/", true) // URL sau khi đăng nhập thành công
-                .failureUrl("/login?error=true") // URL nếu đăng nhập thất bại
-                .usernameParameter("username") // tham số tên người dùng
-                .passwordParameter("password") // tham số mật khẩu
+                .loginPage("/login")
+                .loginProcessingUrl("/doLogin")
+                .defaultSuccessUrl("/", true)
+                .failureUrl("/login?error=true")
+                .usernameParameter("username")
+                .passwordParameter("password")
                 .and()
                 .logout()
-                .logoutRequestMatcher(new AntPathRequestMatcher("/logout")) // URL để logout
-                .logoutSuccessUrl("/") // URL sau khi logout thành công
-                .deleteCookies("JSESSIONID") // Xoá cookie phiên
+                .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+                .logoutSuccessUrl("/")
+                .deleteCookies("JSESSIONID")
                 .invalidateHttpSession(true);
 
-        // Cấu hình "Remember Me"
-        http.rememberMe().tokenValiditySeconds(60 * 60 * 24 * 1); // 1 ngày
-        }
+        http.rememberMe().tokenValiditySeconds(60 * 60 * 24 * 1);
+    }
 }
 
 
